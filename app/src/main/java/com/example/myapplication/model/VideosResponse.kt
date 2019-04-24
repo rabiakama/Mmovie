@@ -1,15 +1,27 @@
 package com.example.myapplication.model
 
- class VideosResponse {
-     val results: List<Videos>? = null
+import com.google.gson.annotations.SerializedName
 
-      fun getYoutubeTrailer(): Videos? {
-         results?.forEach { video ->
-             if (video.type.equals(VideoTypes.Trailer.name) && video.site.equals("YouTube")) {
-                 return video
-             }
-         }
-         return null
-     }
+class VideosResponse {
+    @SerializedName("results")
+     var results: List<Videos>?=null
+    @SerializedName("id")
+    private var id: Int? = null
+
+    fun getId():Int?{
+        return id
+    }
+
+    fun setId(id:Int?){
+        this.id=id
+    }
+
+    fun getTrailers(): List<Videos>? {
+        return results
+    }
+
+    fun setTrailers(trailers: List<Videos>?) {
+        this.results = trailers
+    }
  }
 

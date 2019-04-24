@@ -2,8 +2,10 @@ package com.example.myapplication.service
 
 import com.example.myapplication.model.GenresResponse
 import com.example.myapplication.model.MoviesResponse
+import com.example.myapplication.model.VideosResponse
 import retrofit2.Call
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 
@@ -78,6 +80,18 @@ interface Api {
         @Query("api_key") apiKey: String,
         @Query("language") language: String,
         @Query("page") page: Int
+    ): Call<MoviesResponse>
+
+    @GET("movie/{movie_id}/videos")
+    fun getTrailers(
+        @Query("api_key") apiKey: String,
+        @Query("language") language: String
+    ): Call<VideosResponse>
+
+    @GET("movie/{movie_id}")
+    fun getDetails(
+        @Query("api_key") apiKey: String,
+        @Query("language") language: String
     ): Call<MoviesResponse>
 
 }

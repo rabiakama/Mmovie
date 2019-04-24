@@ -7,7 +7,7 @@ import android.net.NetworkInfo
 
 
 class ApiUtils {
-    fun hasNetwork(context: Context): Boolean? {
+     fun hasNetwork(context: Context): Boolean? {
         var isConnected: Boolean? = false // Initial Value
         val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val activeNetwork: NetworkInfo? = connectivityManager.activeNetworkInfo

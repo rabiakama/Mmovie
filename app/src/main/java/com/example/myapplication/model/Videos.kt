@@ -1,11 +1,30 @@
 package com.example.myapplication.model
 
-enum class VideoTypes {
-    Trailer, Teaser, Clip, Featurette
+import com.google.gson.annotations.SerializedName
+
+
+class Videos {
+    @SerializedName("key")
+    private var key: String? = null
+    @SerializedName("name")
+    private var name:String?=null
+
+    fun getKey(): String? {
+        return key
+    }
+
+    fun setKey(key: String?) {
+        this.key = key
+    }
+
+    fun getName(): String? {
+        return key
+    }
+
+    fun setName(key: String?) {
+        this.key = key
+    }
+
 }
 
-data class Videos (
-    val key: String? = null,
-    val type: String? = null,
-    val site: String? = null
-)
+

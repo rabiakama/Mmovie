@@ -1,17 +1,18 @@
 package com.example.myapplication.model
 
+
 import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 
 
-class Movies() :Parcelable {
+class Movies() : Parcelable {
     @SerializedName("poster_path")
     private var  posterPath: String?=null
     @SerializedName("adult")
     private var adult: Boolean = false
     @SerializedName("overview")
-    private lateinit var overview: String
+    private  var overview: String?=null
     @SerializedName("release_date")
     private var releaseDate: String? = null
     @SerializedName("genre_ids")
@@ -60,7 +61,7 @@ class Movies() :Parcelable {
         this.posterPath = posterPath
     }
 
-    fun isAdult(): Boolean {
+    fun getAdult(): Boolean {
         return adult
     }
 
@@ -162,6 +163,7 @@ class Movies() :Parcelable {
 
     fun setVoteAverage(voteAverage: Double?) {
         this.voteAverage = voteAverage
+
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -193,4 +195,6 @@ class Movies() :Parcelable {
             return arrayOfNulls(size)
         }
     }
+
+
 }

@@ -5,7 +5,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="90dp"
+        android:layout_height="100dp"
         android:layout_marginBottom="4dp"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
@@ -22,7 +22,7 @@
         <ImageView
                 android:id="@+id/posterImageView"
                 android:layout_width="60dp"
-                android:layout_height="60dp"
+                android:layout_height="80dp"
                 android:adjustViewBounds="true"
                 android:importantForAutofill="no"
                 android:scaleType="fitCenter"
@@ -45,32 +45,37 @@
                 android:layout_toRightOf="@id/posterImageView"/>
 
         <TextView
-                android:id="@+id/genresTextView"
+                android:id="@+id/voteaverageitem"
+                android:drawableLeft="@drawable/ic_star_black_24dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/titleTextView"
-                android:layout_marginStart="8dp"
                 android:layout_toEndOf="@id/posterImageView"
-                android:ellipsize="end"
-                android:maxLines="2"
-                android:textSize="14sp"
-                tools:text="Drama, Romance, Thriller"
-                android:layout_marginLeft="8dp"
-                android:layout_toRightOf="@id/posterImageView"/>
+                android:textSize="12sp"
+                android:textStyle="italic"
+                tools:text="4.5"
+                android:gravity="center_vertical"
+                android:layout_marginLeft="5dp"
+                android:layout_toRightOf="@id/posterImageView"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="5dp"/>
 
         <TextView
                 android:id="@+id/releaseDateTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
-                android:layout_marginBottom="8dp"
-                android:layout_marginStart="8dp"
+                android:layout_marginBottom="3dp"
+                android:layout_marginStart="3dp"
+                android:layout_below="@id/voteaverageitem"
                 android:layout_toEndOf="@id/posterImageView"
                 android:textSize="12sp"
                 android:textStyle="italic"
                 tools:text="19/11/2016"
-                android:layout_marginLeft="8dp"
-                android:layout_toRightOf="@id/posterImageView"/>
+                android:layout_marginLeft="3dp"
+                android:layout_toRightOf="@id/posterImageView"
+                android:layout_marginTop="4dp"/>
+
 
     </RelativeLayout>
 

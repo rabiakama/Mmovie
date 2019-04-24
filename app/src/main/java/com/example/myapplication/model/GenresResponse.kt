@@ -1,8 +1,16 @@
 package com.example.myapplication.model
 
-class GenresResponse {
+import com.google.gson.annotations.SerializedName
 
+class GenresResponse {
+  @SerializedName("genres")
   var genres:ArrayList<Genres>?=null
+
+  fun getGenres():List<Genres>?{
+    return genres
+  }
+
+
 
 }
 
