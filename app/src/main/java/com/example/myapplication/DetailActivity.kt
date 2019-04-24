@@ -58,6 +58,7 @@ class DetailActivity : AppCompatActivity(),MoviesAdapter.OnItemClickListener {
         initCollapsingToolBar()
         initViews()
         val movie: Movies
+        val detail:Movies
 
 
         val intent: Intent = intent
