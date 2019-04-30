@@ -1,6 +1,10 @@
 package com.example.myapplication.adapter
 
 
+import android.content.ActivityNotFoundException
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -9,14 +13,14 @@ import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.example.myapplication.R
 import com.example.myapplication.model.Videos
-import kotlinx.android.synthetic.main.activity_detail.view.*
-
-import kotlinx.android.synthetic.main.movie_item.view.*
 
 
-class TrailerAdapter(private var trailerList:List<Videos>): RecyclerView.Adapter<TrailerAdapter.ViewHolderV>() {
+
+class TrailerAdapter(private  var trailerList:List<Videos>): RecyclerView.Adapter<TrailerAdapter.ViewHolderV>() {
 
 
+   // private lateinit var trailerList:List<Videos>
+    var mContext: Context? = null
 
 
     override fun onCreateViewHolder(group: ViewGroup, p1: Int): ViewHolderV {
@@ -26,7 +30,9 @@ class TrailerAdapter(private var trailerList:List<Videos>): RecyclerView.Adapter
 
     override fun onBindViewHolder(holder: ViewHolderV, position: Int) {
         //p0.titletxt.setText(trailerList.get(p1).getName())
-        holder.bindTo(trailerList[position])
+        val trailer=trailerList[position]
+        holder.bindTo(trailer)
+
     }
 
 
@@ -37,25 +43,36 @@ class TrailerAdapter(private var trailerList:List<Videos>): RecyclerView.Adapter
 
     inner class ViewHolderV(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        val titletxt by lazy { itemView.findViewById<TextView>(R.id.details_video_title) }
-        //val thumbnail by lazy { itemView.findViewById<TextView>(R.id.details_video_icon) }
+
+        val thumbnail by lazy { itemView.findViewById<TextView>(R.id.thumnailVideo) }
         val videoUrl="https://www.youtube.com/watch?v="
 
         fun bindTo(vd: Videos) {
 
-            titletxt.text = vd.getName()
-            var pos=adapterPosition
-            var videoId=trailerList.get(pos).getKey()
-
-            Glide.with(itemView.context)
+            /*Glide.with(itemView.context)
                 .load(videoUrl+videoId)
                 .placeholder(R.drawable.abc_ic_go_search_api_material)
-                .into(itemView.details_image)
+                .into(itemView.thumnailVideo)*/
 
-        }
+            itemView.setOnClickListener{
+                if(adapterPosition !=RecyclerView.NO_POSITION){
+                    val clicked:Videos=trailerList.get(adapterPosition)
+                    val videoId=trailerList.get(adapterPosition).getKey()
+                    val intent=Intent(Intent.ACTION_VIEW,Uri.parse("https://www.youtube.com/watch?v="+videoId))
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    intent.putExtra("VIDEO_ID",videoId)
+                    mContext?.startActivity(intent)
+                }
 
 
+                //clickListener.onItemClicked(trailerList[adapterPosition])
+            }
 
+            }
 
     }
+    /*interface OnItemClickListener{
+        fun onItemClicked(trailer: Videos)
+    }*/
+
 }

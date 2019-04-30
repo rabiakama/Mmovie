@@ -7,13 +7,22 @@ import android.net.NetworkInfo
 
 
 class ApiUtils {
-     fun hasNetwork(context: Context): Boolean? {
+
+
+    var BASE_URL = "http://api.themoviedb.org/3/movie/"
+    var API_KEY = "1b0b39b7699af0ca010cd87d9e6de6c8"
+    var IMAGE_URL_POSTER = "http://image.tmdb.org/t/p/w185"
+    var IMAGE_URL_BACKDROP = "http://image.tmdb.org/t/p/w780"
+
+
+
+     /*fun hasNetwork(context: Context): Boolean? {
         var isConnected: Boolean? = false // Initial Value
         val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val activeNetwork: NetworkInfo? = connectivityManager.activeNetworkInfo
         if (activeNetwork != null && activeNetwork.isConnected)
             isConnected = true
-        return isConnected
+        return isConnected*/
     }
 
 
@@ -42,5 +51,5 @@ class ApiUtils {
 //            .build()
 //
 //                return retrofit
-    }
+
 

@@ -1,5 +1,7 @@
 package com.example.myapplication
 
+import com.example.myapplication.model.Movies
+import com.example.myapplication.service.Api
 import org.junit.Test
 
 import org.junit.Assert.*
@@ -14,4 +16,14 @@ class ExampleUnitTest {
     fun addition_isCorrect() {
         assertEquals(4, 2 + 2)
     }
+
+    @Test
+    fun testPopularMovies(){
+        val movies:Movies
+
+    }
+
+
+
+
 }

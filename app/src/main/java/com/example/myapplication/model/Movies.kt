@@ -3,6 +3,7 @@ package com.example.myapplication.model
 
 import android.os.Parcel
 import android.os.Parcelable
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 
@@ -35,6 +36,9 @@ class Movies() : Parcelable {
     private var video: Boolean = false
     @SerializedName("vote_average")
     private var voteAverage: Double? = null
+
+    var isFavorite:Boolean=false
+
 
     constructor(parcel: Parcel) : this() {
         posterPath = parcel.readString()

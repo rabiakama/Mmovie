@@ -8,6 +8,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object Client {
 
+
     val BASE_URL = "https://api.themoviedb.org/3/"
     var retrofit: Retrofit? = null
 
@@ -25,7 +26,10 @@ object Client {
                     .addConverterFactory(GsonConverterFactory.create())
                     .build()
 
+
             }
             return retrofit
         }
+
+
 }

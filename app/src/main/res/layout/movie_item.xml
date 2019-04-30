@@ -11,12 +11,12 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="4dp"
         android:clickable="true"
-        android:background="bla"
         android:foreground="?attr/selectableItemBackground"
-        app:cardCornerRadius="0dp">
+        app:cardCornerRadius="0dp"
+        android:focusable="true">
 
     <RelativeLayout
-            android:background="@color/black"
+
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 

@@ -8,4 +8,5 @@ class Cast {
   val name: String = ""
   val profile_path: String? = null
   val image_path: String? = null
+
 }

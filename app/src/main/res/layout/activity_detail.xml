@@ -10,7 +10,7 @@
     <android.support.design.widget.AppBarLayout
             android:id="@+id/appbar"
             android:layout_height="wrap_content"
-            android:background="@color/grey"
+            android:background="@color/transparent"
             android:layout_width="match_parent">
 
         <android.support.design.widget.CollapsingToolbarLayout
@@ -28,11 +28,11 @@
 
                 <ImageView
                         android:id="@+id/details_image"
-                        android:layout_width="match_parent"
-                        android:layout_height="200dp"
+                        android:layout_width="200dp"
+                        android:layout_height="250dp"
                         tools:ignore="MissingConstraints"
                         tools:layout_editor_absoluteY="0dp"
-                        tools:layout_editor_absoluteX="0dp"/>
+                        tools:layout_editor_absoluteX="105dp"/>
 
 
 
@@ -58,50 +58,120 @@
             app:layout_behavior="android.support.design.widget.AppBarLayout$ScrollingViewBehavior">
 
         <RelativeLayout
-                android:orientation="vertical"
+
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="match_parent">
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/detail_title"
+                    android:textColor="@color/orange"
+                    android:textAllCaps="true"
+                    android:textSize="30sp"
+                    />
+
+            <TextView
+                    android:paddingTop="5dp"
+                    android:layout_width="160dp"
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/ic_star_half_black_24dp"
+                    android:id="@+id/vote_average"
+                    android:layout_below="@id/detail_title"
+                    android:textColor="@color/orange"
+
+                    android:textSize="22sp"
+                   />
+
+            <TextView
+                    android:paddingTop="5dp"
+                    android:layout_width="368dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/releasedate"
+                    android:drawableLeft="@drawable/calen"
+                    android:textColor="@color/orange"
+                    android:layout_below="@+id/vote_average"
+                    android:textSize="22sp"
+            />
+            <TextView
+                    android:paddingTop="5dp"
+                    android:layout_width="368dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/original_language"
+                    android:textAllCaps="true"
+                    android:drawableLeft="@drawable/langu"
+                    android:textColor="@color/orange"
+                    android:layout_below="@+id/releasedate"
+                    android:textSize="22sp"
+            />
+
+
+            <TextView
+                    android:paddingTop="5dp"
+                    android:layout_width="368dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/detailoverview"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:layout_below="@+id/original_language"
+                    android:textSize="23sp"
+            />
 
             <Button
                     android:id="@+id/favorite_button"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
-                    android:text="Add Fav"
                     android:layout_alignParentRight="true"
-                    android:background="@color/colorPrimary"/>
+                    android:layout_below="@id/detailoverview"
+                    app:layout_constraintLeft_toRightOf="@+id/releasedate"
+                    android:background="@color/colorPrimary"
+                    android:layout_alignParentEnd="true"/>
 
+            <HorizontalScrollView
+                    android:id="@+id/movieTrailersContainer"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/trailersLabel">
+
+                <LinearLayout
+                        android:id="@+id/movieTrailers"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal" />
+            </HorizontalScrollView>
 
             <TextView
-                    android:layout_width="160dp"
+                    android:id="@+id/trailersLabel"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:id="@+id/detail_title"
-                    android:layout_toRightOf="@+id/favorite_button"
-                    android:textSize="20sp"
-                    android:layout_toEndOf="@+id/favorite_button"/>
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginTop="32dp"
+                    android:text="Trailers"
+                    android:textSize="24sp"
+                    android:visibility="gone"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/detailoverview" />
 
             <TextView
-                    android:layout_width="160dp"
+                    android:id="@+id/reviewsLabel"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:id="@+id/vote_average"
-                    android:layout_toRightOf="@+id/favorite_button"
-                    android:textSize="20sp"
-                    android:layout_toEndOf="@+id/detail_title"/>
-
-            <TextView
-                    android:layout_width="368dp"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/releasedate"
-                    android:layout_below="@+id/vote_average"
-                    android:textSize="20sp"
-            />
-
-            <TextView
-                    android:layout_width="368dp"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/detailoverview"
-                    android:layout_below="@+id/releasedate"
-                    android:textSize="20sp"
-            />
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginTop="24dp"
+                    android:text="Reviews"
+                    android:textSize="24sp"
+                    android:visibility="gone"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/movieTrailersContainer" />
 
         </RelativeLayout>
 

@@ -1,8 +1,6 @@
 package com.example.myapplication.service
 
-import com.example.myapplication.model.GenresResponse
-import com.example.myapplication.model.MoviesResponse
-import com.example.myapplication.model.VideosResponse
+import com.example.myapplication.model.*
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -55,8 +53,10 @@ interface Api {
         @Query("region") region: String
     ): Call<MoviesResponse>
 
+
     @GET("/account/{account_id}/favorite/movies")
     fun getFavoriteMovies(
+        @Path("account_id") accountId:Int,
         @Query("api_key") apiKey: String,
         @Query("session_id") sessionId: String,
         @Query("language") language: String,
@@ -75,23 +75,27 @@ interface Api {
     ): Call<MoviesResponse>
 
 
-    @GET("movie/search")
+    @GET("movie/search/movie")
     fun searchMovie(
         @Query("api_key") apiKey: String,
         @Query("language") language: String,
-        @Query("page") page: Int
+        @Query("query") query:String
+
     ): Call<MoviesResponse>
+
 
     @GET("movie/{movie_id}/videos")
     fun getTrailers(
+        @Path("movie_id") movieId:Int,
         @Query("api_key") apiKey: String,
         @Query("language") language: String
     ): Call<VideosResponse>
 
     @GET("movie/{movie_id}")
     fun getDetails(
+        @Path("movie_id") movieId:Int,
         @Query("api_key") apiKey: String,
         @Query("language") language: String
-    ): Call<MoviesResponse>
+    ): Call<MovieDetail>
 
 }
