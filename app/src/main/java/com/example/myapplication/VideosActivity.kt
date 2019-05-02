@@ -41,12 +41,12 @@ class VideosActivity : AppCompatActivity() {
 
         videoId = intent.getIntExtra("MOVIE_ID", videoId)
 
-        loadTrailer()
+        initView()
 
     }
 
     private fun initView() {
-        val adapter: MoviesAdapter? = null
+        val adapter: TrailerAdapter? = null
         val mLayoutManager = LinearLayoutManager(applicationContext)
         recylerView_video.layoutManager = mLayoutManager
         recylerView_video.adapter = adapter
@@ -57,32 +57,16 @@ class VideosActivity : AppCompatActivity() {
 
 
     private fun loadTrailer() {
-        /*repository.getTrailerss().enqueue(object:retrofit2.Callback<VideosResponse> {
-            override fun onFailure(call: Call<VideosResponse>, t: Throwable) {
-                Toast.makeText(this@VideosActivity,"error", Toast.LENGTH_SHORT).show()
-            }
-
-            override fun onResponse(call: Call<VideosResponse>, response: Response<VideosResponse>) {
-                val list:ArrayList<Videos> = arrayListOf()
-                val trailerAdapter: TrailerAdapter?=null
-                list.clear()
-                list.addAll(response.body()!!.results!!)
-                recylerView_video.layoutManager =
-                    LinearLayoutManager(this@VideosActivity, LinearLayoutManager.VERTICAL, false)
-                recylerView_video.adapter=trailerAdapter
-                recylerView_video.smoothScrollToPosition(0)
-            }
-
-        })
-    }*/
         try {
             repository.getTrailerss().enqueue(object : Callback<VideosResponse> {
                 override fun onResponse(call: Call<VideosResponse>, response: retrofit2.Response<VideosResponse>) {
                     if (response.isSuccessful && response.body() != null) {
+                        var trailerAdapter:TrailerAdapter?=null
                         trailerlist.addAll(response.body()!!.results!!)
                         recylerView_video.layoutManager =
                             LinearLayoutManager(this@VideosActivity, LinearLayoutManager.VERTICAL, false)
-                        recylerView_video.adapter = adapterV
+                        trailerAdapter= TrailerAdapter(trailerlist)
+                        recylerView_video.adapter = trailerAdapter
                         recylerView_video.smoothScrollToPosition(0)
                     }
 

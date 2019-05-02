@@ -2,10 +2,7 @@ package com.example.myapplication
 
 
 
-import android.content.ActivityNotFoundException
-import android.content.ContentValues
-import android.content.Context
-import android.content.Intent
+import android.content.*
 import android.net.Uri
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -31,8 +28,10 @@ import android.widget.Toast
 import com.example.myapplication.adapter.TrailerAdapter
 import com.example.myapplication.repository.FavHelper
 import com.example.myapplication.repository.OnGetTrailersCallback
+import kotlinx.android.synthetic.main.activity_videos.*
 import kotlinx.android.synthetic.main.videos_row.*
 import retrofit2.Call
+import retrofit2.Callback
 import retrofit2.Response
 
 
@@ -45,7 +44,7 @@ class DetailActivity : AppCompatActivity() {
     private var saveMovieRecordNumber: Int?=null
     private val SAVE_MOVIE_SUCCESS = 10
     private val SAVE_MOVIE_FAIL = 11
-    private var movies:Movies?=null
+    lateinit var movies:Movies
     private var movieID: Int = 0
     var MOVIE_ID = "movie_id"
 
@@ -82,48 +81,15 @@ class DetailActivity : AppCompatActivity() {
         favorite_button.setOnClickListener {
             object : View.OnClickListener {
                 override fun onClick(v: View) {
-                    val favorite: Boolean = true
-
-                    if (favorite) {
-                        val editor = getSharedPreferences( FavHelper.CONTENT_AUTHORITY,
-                            Context.MODE_PRIVATE
-                        ).edit()
-                        editor.putBoolean("Favorite Added", true)
-                        editor.apply()//neden commit yerine kullanılıyor
-                            saveFavorite()
-
-                        Toast.makeText(this@DetailActivity, "Added to your favorite", Toast.LENGTH_SHORT).show()
-
-                    } else {
-                        val movie_id = intent.extras.getInt("id")
-                        favoriteDbHelper?.deleteFavorite(movie_id)
-                        val editor =
-                            getSharedPreferences(
-                                FavHelper.CONTENT_AUTHORITY,
-                                Context.MODE_PRIVATE
-                            ).edit()
-                        editor.putBoolean("Favorite Removed", true)
-                        editor.apply()
-                            saveFavorite()
-                        Toast.makeText(this@DetailActivity, "Removed to your favorite", Toast.LENGTH_SHORT).show()
+                    val favorite:Boolean?=null
+                    if(favorite!!){
+                        addMovieToFavorite()
                     }
-
 
                 }
             }
-            initView()
-
-
         }
-        video_button.setOnClickListener(object : View.OnClickListener {
-            override fun onClick(v: View?) {
-                val trailer: Videos? = null
-                Toast.makeText(this@DetailActivity, "Trailer Page", Toast.LENGTH_SHORT).show()
-                val intent = Intent(this@DetailActivity, VideosActivity::class.java)
-                intent.putExtra("VIDEO_ID", trailer?.getKey())
-                this@DetailActivity.startActivity(intent)
-            }
-        })
+
 
     }
 
@@ -133,7 +99,7 @@ class DetailActivity : AppCompatActivity() {
         detailsRv.layoutManager = mLayoutManager
         detailsRv.adapter = adapter
         adapter?.notifyDataSetChanged()
-        loadTrailerss()
+        loadTrailer()
 
     }
 
@@ -171,7 +137,7 @@ class DetailActivity : AppCompatActivity() {
                 vote_average.text = movie.getVoteAverage()!!.toDouble().toString()
                 original_language.text = movie.getOriginalLanguage()
                 detailoverview.text = movie.getOverview()
-                //loadTrailerss()
+                loadTrailer()
                 if (!isFinishing) {
                     Glide.with(this@DetailActivity)
                         .load(BACK_DROP_URL + movie.getPosterPath())
@@ -188,8 +154,7 @@ class DetailActivity : AppCompatActivity() {
         })
 
     }
-
-    private fun loadTrailerss() {
+   /* private fun loadTrailerss() {
         repository.getTrailerss().enqueue(object : retrofit2.Callback<VideosResponse> {
             override fun onFailure(call: Call<VideosResponse>, t: Throwable) {
                 Toast.makeText(this@DetailActivity, "error", Toast.LENGTH_SHORT).show()
@@ -206,7 +171,7 @@ class DetailActivity : AppCompatActivity() {
 
         })
 
-    }
+    }*/
 
     private fun loadTrailer() {
         repository.getTrailers(movieID, object : OnGetTrailersCallback {
@@ -255,6 +220,19 @@ class DetailActivity : AppCompatActivity() {
     override fun onSupportNavigateUp(): Boolean {
         onBackPressed()
         return true
+    }
+
+    private fun addMovieToFavorite(){
+        val movieId=movies.getId()
+        val sharedPreferences= getSharedPreferences(FavHelper.CONTENT_AUTHORITY,Context.MODE_PRIVATE)
+        val editor=sharedPreferences.edit()
+        editor.putInt(movies.getId().toString(),movieID)
+        editor.apply()
+        saveFavorite()
+
+        Toast.makeText(this@DetailActivity, "Added to your favorite", Toast.LENGTH_SHORT).show()
+
+
     }
 
     private fun saveFavorite(){
