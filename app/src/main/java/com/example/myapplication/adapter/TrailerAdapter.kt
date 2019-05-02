@@ -83,10 +83,7 @@ class TrailerAdapter(private  var trailerList:ArrayList<Videos>): RecyclerView.A
 
                         Toast.makeText(v.context,"You clicked"+clickedDataItem.getName(),Toast.LENGTH_SHORT).show()
                 }
-
-
                     }
-
 
                 }
 

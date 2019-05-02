@@ -16,30 +16,21 @@ import com.example.myapplication.repository.Repository
 import com.example.myapplication.service.Api
 import com.example.myapplication.service.Client
 import kotlinx.android.synthetic.main.activity_detail.*
-import android.os.Build
-import android.support.annotation.RequiresApi
 import android.support.v7.widget.LinearLayoutManager
-import android.util.Log
 import android.view.View
-import android.widget.AbsListView
 import android.widget.ImageView
 
 import android.widget.Toast
 import com.example.myapplication.adapter.TrailerAdapter
 import com.example.myapplication.repository.FavHelper
 import com.example.myapplication.repository.OnGetTrailersCallback
-import kotlinx.android.synthetic.main.activity_videos.*
-import kotlinx.android.synthetic.main.videos_row.*
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 
 @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 class DetailActivity : AppCompatActivity() {
 
     private val BACK_DROP_URL = "https://image.tmdb.org/t/p/w500/"
-    private val YOUTUBE_VIDEO_URL = "http://www.youtube.com/watch?v=%s"
+    private val YOUTUBE_VIDEO_URL = "https://www.youtube.com/watch?v="
     private val YOUTUBE_THUMBNAIL_URL = "http://img.youtube.com/vi/%s/0.jpg"
     private var saveMovieRecordNumber: Int?=null
     private val SAVE_MOVIE_SUCCESS = 10
@@ -91,10 +82,11 @@ class DetailActivity : AppCompatActivity() {
         }
 
 
+
     }
 
     private fun initView() {
-        val adapter: MoviesAdapter? = null
+        val adapter: TrailerAdapter? = null
         val mLayoutManager = LinearLayoutManager(applicationContext)
         detailsRv.layoutManager = mLayoutManager
         detailsRv.adapter = adapter
@@ -154,7 +146,7 @@ class DetailActivity : AppCompatActivity() {
         })
 
     }
-   /* private fun loadTrailerss() {
+    /*private fun loadTrailerss() {
         repository.getTrailerss().enqueue(object : retrofit2.Callback<VideosResponse> {
             override fun onFailure(call: Call<VideosResponse>, t: Throwable) {
                 Toast.makeText(this@DetailActivity, "error", Toast.LENGTH_SHORT).show()
@@ -175,7 +167,7 @@ class DetailActivity : AppCompatActivity() {
 
     private fun loadTrailer() {
         repository.getTrailers(movieID, object : OnGetTrailersCallback {
-            override fun onSuccess(trailers: List<Videos>?) {
+            override fun onSuccess(trailers: Array<Videos>?) {
                 trailersLabel.visibility = View.VISIBLE
                 movieTrailers.removeAllViews()
                 for (trailer: Videos in trailers!!) {
@@ -185,7 +177,7 @@ class DetailActivity : AppCompatActivity() {
 
                     thumbnail.setOnClickListener(object : View.OnClickListener {
                         override fun onClick(v: View?) {
-                            showTrailer(YOUTUBE_VIDEO_URL, trailer.getKey())
+                            showTrailer(YOUTUBE_VIDEO_URL)
 
                         }
 
@@ -207,15 +199,15 @@ class DetailActivity : AppCompatActivity() {
         })
     }
 
-    private fun showTrailer(url: String, key: String?) {
-        try {
+    private fun showTrailer(url: String) {
+
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
             startActivity(intent)
-        } catch (ex: ActivityNotFoundException) {
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v=" + movieID))
-            startActivity(intent)
+
+            /*val intent = Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v=" + movieID))
+            startActivity(intent)*/
         }
-    }
+
 
     override fun onSupportNavigateUp(): Boolean {
         onBackPressed()
@@ -223,7 +215,7 @@ class DetailActivity : AppCompatActivity() {
     }
 
     private fun addMovieToFavorite(){
-        val movieId=movies.getId()
+       // val movieId=movies.getId()
         val sharedPreferences= getSharedPreferences(FavHelper.CONTENT_AUTHORITY,Context.MODE_PRIVATE)
         val editor=sharedPreferences.edit()
         editor.putInt(movies.getId().toString(),movieID)

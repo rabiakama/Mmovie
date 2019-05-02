@@ -2,10 +2,7 @@ package com.example.myapplication.repository
 
 
 
-import android.support.v7.widget.RecyclerView
 import com.example.myapplication.model.MovieDetail
-import com.example.myapplication.model.MoviesResponse
-import com.example.myapplication.model.Videos
 import com.example.myapplication.model.VideosResponse
 import com.example.myapplication.service.Api
 import retrofit2.Call
@@ -29,7 +26,7 @@ class Repository(private val api: Api) {
 
     fun getSearch( )=api.searchMovie(apiKey ="534bc4143a626777d62c7d1ab8697aba",language = "en-US",query ="343611")
 
-    fun getTrailerss()=api.getTrailers(apiKey ="534bc4143a626777d62c7d1ab8697aba",movieId = 491584)
+    //fun getTrailerss()=api.getTrailers(apiKey ="534bc4143a626777d62c7d1ab8697aba",movieId = 491584)
 
     fun getTrailers(movieID: Int,callback: OnGetTrailersCallback){
         api.getTrailers(movieID,apiKey = "534bc4143a626777d62c7d1ab8697aba")
