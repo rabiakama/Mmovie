@@ -28,8 +28,8 @@ class TestApi {
     fun fetchMovieDetails() {
         val movies =Movies()
         apiService.getDetails(1,"","en-Us")
-        Assert.assertEquals("Burn",movies.getTitle())
-        Assert.assertEquals(getBackdropUrl("/fki3kBlwJzFp8QohL43g9ReV455.jpg"),movies.getPosterPath())
+        Assert.assertEquals("Burning",movies.getTitle())
+        Assert.assertEquals(getBackdropUrl("/fki3kBlwJzFp8QohL43g9ReV455.jpg"),movies.getBackdropPath())
 
     }
 

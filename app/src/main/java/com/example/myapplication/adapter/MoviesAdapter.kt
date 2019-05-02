@@ -19,7 +19,7 @@ import android.widget.Filterable
 
 class MoviesAdapter(var movielist:MutableList<Movies>,val itemClickListener: OnItemClickListener):RecyclerView.Adapter<MoviesAdapter.ViewHolder>(),Filterable {
     private var movlist: List<Movies>? = null
-    private lateinit var context:Context
+
 
 
     override fun getFilter(): Filter {

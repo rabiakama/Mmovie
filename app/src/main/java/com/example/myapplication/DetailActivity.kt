@@ -22,6 +22,7 @@ import kotlinx.android.synthetic.main.activity_detail.*
 import android.os.Build
 import android.support.annotation.RequiresApi
 import android.support.v7.widget.LinearLayoutManager
+import android.util.Log
 import android.view.View
 import android.widget.AbsListView
 import android.widget.ImageView
@@ -41,15 +42,15 @@ class DetailActivity : AppCompatActivity() {
     private val BACK_DROP_URL = "https://image.tmdb.org/t/p/w500/"
     private val YOUTUBE_VIDEO_URL = "http://www.youtube.com/watch?v=%s"
     private val YOUTUBE_THUMBNAIL_URL = "http://img.youtube.com/vi/%s/0.jpg"
-    private val DELETE_MOVIE_SUCCESS = 30
-    private val DELETE_MOVIE_FAIL = 31
-    private var deleteMovieRecordNumber: Int = 0
+    private var saveMovieRecordNumber: Int?=null
+    private val SAVE_MOVIE_SUCCESS = 10
+    private val SAVE_MOVIE_FAIL = 11
     private var movies:Movies?=null
     private var movieID: Int = 0
     var MOVIE_ID = "movie_id"
 
     private val favoriteDbHelper: FavHelper? = null
-    private val favorite: Movies? = null
+
 
 
     private lateinit var repository: Repository
@@ -84,15 +85,13 @@ class DetailActivity : AppCompatActivity() {
                     val favorite: Boolean = true
 
                     if (favorite) {
-                        val editor = getSharedPreferences(
-                            "com.example.myapplication.DetailActivity",
+                        val editor = getSharedPreferences( FavHelper.CONTENT_AUTHORITY,
                             Context.MODE_PRIVATE
                         ).edit()
                         editor.putBoolean("Favorite Added", true)
                         editor.apply()//neden commit yerine kullanılıyor
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                             saveFavorite()
-                        }
+
                         Toast.makeText(this@DetailActivity, "Added to your favorite", Toast.LENGTH_SHORT).show()
 
                     } else {
@@ -100,14 +99,12 @@ class DetailActivity : AppCompatActivity() {
                         favoriteDbHelper?.deleteFavorite(movie_id)
                         val editor =
                             getSharedPreferences(
-                                "com.example.myapplication.DetailActivity",
+                                FavHelper.CONTENT_AUTHORITY,
                                 Context.MODE_PRIVATE
                             ).edit()
                         editor.putBoolean("Favorite Removed", true)
                         editor.apply()
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                             saveFavorite()
-                        }
                         Toast.makeText(this@DetailActivity, "Removed to your favorite", Toast.LENGTH_SHORT).show()
                     }
 
@@ -136,7 +133,7 @@ class DetailActivity : AppCompatActivity() {
         detailsRv.layoutManager = mLayoutManager
         detailsRv.adapter = adapter
         adapter?.notifyDataSetChanged()
-        //loadTrailerss()
+        loadTrailerss()
 
     }
 
@@ -270,18 +267,19 @@ class DetailActivity : AppCompatActivity() {
         values.put(FavHelper.COLUMN_PLOT_SYNOPSIS, favorites.getOverview())
         values.put(FavHelper.COLUMN_USERRATING, favorites.getVoteAverage())
         values.put(FavHelper.COLUMN_MOVIEID, favorites.getId())
-    }
+        favoriteDbHelper?.addFavorite(favorites)
 
-    private fun deleteFavorite(){
-        val selection:String=FavHelper.COLUMN_MOVIEID + "=?"
-        val selectionArgs = arrayOf<String>(movies?.getId())
-        val rowsDeleted:Int= contentResolver.delete(FavHelper.CONTENT_URI,selection,selectionArgs)
-        if(rowsDeleted==0){
-            deleteMovieRecordNumber = DELETE_MOVIE_FAIL
-        }else{
-            deleteMovieRecordNumber= DELETE_MOVIE_SUCCESS
+        val newUri: Uri?  = contentResolver.insert(FavHelper.CONTENT_URI, values)
+
+        if (newUri == null) {
+            saveMovieRecordNumber = SAVE_MOVIE_FAIL
+            Toast.makeText(this,"Movie Failed",Toast.LENGTH_SHORT).show()
+        } else {
+            saveMovieRecordNumber = SAVE_MOVIE_SUCCESS
+            Toast.makeText(this,"Movie Successfully",Toast.LENGTH_SHORT).show()
         }
     }
+
 
 
 

@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
 
 import android.content.ContentValues
+import android.net.Uri
 
 import com.example.myapplication.model.Movies
 
@@ -32,11 +33,20 @@ class FavHelper(context: Context, name: String?,
         val COLUMN_USERRATING = "vote_average"
         val COLUMN_POSTER_PATH = "poster_path"
         val COLUMN_PLOT_SYNOPSIS = "overview"
+        val CONTENT_AUTHORITY = "com.example.myapplication.repository"
+        val BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY)
+        val  CONTENT_URI = BASE_CONTENT_URI.buildUpon()
+            .appendPath(TABLE_NAME)
+            .build()
+
+
+
     }
+
 
     fun open() {
         Log.i(TABLE_PRODUCTS, "Database Opened")
-        db = dbhandler?.getWritableDatabase()
+        db = dbhandler?.writableDatabase
     }
 
     override fun close() {
