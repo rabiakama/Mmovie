@@ -29,10 +29,10 @@ class Repository(private val api: Api) {
 
     fun getSearch( )=api.searchMovie(apiKey ="534bc4143a626777d62c7d1ab8697aba",language = "en-US",query ="343611")
 
-   // fun getTrailers()=api.getTrailers(apiKey ="534bc4143a626777d62c7d1ab8697aba",language = "en-US")
+    fun getTrailerss()=api.getTrailers(apiKey ="534bc4143a626777d62c7d1ab8697aba",movieId = 491584)
 
     fun getTrailers(movieID: Int,callback: OnGetTrailersCallback){
-        api.getTrailers(movieID,language = "en-Us",apiKey = "534bc4143a626777d62c7d1ab8697aba")
+        api.getTrailers(movieID,apiKey = "534bc4143a626777d62c7d1ab8697aba")
             .enqueue(object :Callback<VideosResponse>{
                 override fun onFailure(call: Call<VideosResponse>, t: Throwable) {
                     callback.onError()

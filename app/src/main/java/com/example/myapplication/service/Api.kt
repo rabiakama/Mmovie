@@ -87,8 +87,7 @@ interface Api {
     @GET("movie/{movie_id}/videos")
     fun getTrailers(
         @Path("movie_id") movieId:Int,
-        @Query("api_key") apiKey: String,
-        @Query("language") language: String
+        @Query("api_key") apiKey: String
     ): Call<VideosResponse>
 
     @GET("movie/{movie_id}")

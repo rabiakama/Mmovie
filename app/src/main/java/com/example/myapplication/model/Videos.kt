@@ -7,16 +7,16 @@ class Videos {
 
     @SerializedName("key")
     private var key: String? = null
-   /* @SerializedName("name")
+    @SerializedName("name")
     //sonradan eklendi
     private var name:String?=null
-    @SerializedName("id")
+   /* @SerializedName("id")
     var id: String? = null
     @SerializedName("type")
     var type: String? = null
     @SerializedName("site")
     var site: String? = null
-
+*/
 
 
     fun getName(): String? {
@@ -25,7 +25,7 @@ class Videos {
 
     fun setName(key: String?) {
         this.key = key
-    }*/
+    }
 
     fun getKey(): String? {
         return key
