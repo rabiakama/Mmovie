@@ -85,6 +85,7 @@ class FavHelper(context: Context, name: String?,
         db.close()
     }
 
+
     fun deleteFavorite(id: Int) {
         val db = this.writableDatabase
         db.delete(

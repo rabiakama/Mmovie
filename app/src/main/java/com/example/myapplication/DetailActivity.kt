@@ -3,9 +3,13 @@ package com.example.myapplication
 
 
 import android.content.*
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
 import android.net.Uri
+import android.os.AsyncTask
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.os.PersistableBundle
 
 import android.support.design.widget.AppBarLayout
 import android.support.design.widget.CollapsingToolbarLayout
@@ -17,6 +21,8 @@ import com.example.myapplication.service.Api
 import com.example.myapplication.service.Client
 import kotlinx.android.synthetic.main.activity_detail.*
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
+import android.view.MotionEvent
 import android.view.View
 import android.widget.ImageView
 
@@ -24,23 +30,26 @@ import android.widget.Toast
 import com.example.myapplication.adapter.TrailerAdapter
 import com.example.myapplication.repository.FavHelper
 import com.example.myapplication.repository.OnGetTrailersCallback
+import org.json.JSONObject
 
 
 @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 class DetailActivity : AppCompatActivity() {
 
+
     private val BACK_DROP_URL = "https://image.tmdb.org/t/p/w500/"
     private val YOUTUBE_VIDEO_URL = "https://www.youtube.com/watch?v="
     private val YOUTUBE_THUMBNAIL_URL = "http://img.youtube.com/vi/%s/0.jpg"
-    private var saveMovieRecordNumber: Int?=null
+    private var saveMovieRecordNumber: Int? = null
     private val SAVE_MOVIE_SUCCESS = 10
     private val SAVE_MOVIE_FAIL = 11
-    lateinit var movies:Movies
+    private var movies: Movies?=null
+    private var mtrailerList: ArrayList<Videos>?= arrayListOf()
+    lateinit var mtrailerAdapter: TrailerAdapter
     private var movieID: Int = 0
     var MOVIE_ID = "movie_id"
 
     private val favoriteDbHelper: FavHelper? = null
-
 
 
     private lateinit var repository: Repository
@@ -62,6 +71,7 @@ class DetailActivity : AppCompatActivity() {
         initCollapsingToolbar()
 
 
+
         /* favorite_button.setOnClickListener {
             val intent=Intent(this,FavoriteActivity::class.java)
             startActivity(intent)
@@ -72,8 +82,8 @@ class DetailActivity : AppCompatActivity() {
         favorite_button.setOnClickListener {
             object : View.OnClickListener {
                 override fun onClick(v: View) {
-                    val favorite:Boolean?=null
-                    if(favorite!!){
+                    val favorite: Boolean? = null
+                    if (favorite!!) {
                         addMovieToFavorite()
                     }
 
@@ -82,8 +92,8 @@ class DetailActivity : AppCompatActivity() {
         }
 
 
-
     }
+
 
     private fun initView() {
         val adapter: TrailerAdapter? = null
@@ -91,7 +101,7 @@ class DetailActivity : AppCompatActivity() {
         detailsRv.layoutManager = mLayoutManager
         detailsRv.adapter = adapter
         adapter?.notifyDataSetChanged()
-        loadTrailer()
+        //loadTrailer()
 
     }
 
@@ -177,14 +187,15 @@ class DetailActivity : AppCompatActivity() {
 
                     thumbnail.setOnClickListener(object : View.OnClickListener {
                         override fun onClick(v: View?) {
-                            showTrailer(YOUTUBE_VIDEO_URL)
+                            showTrailer(YOUTUBE_VIDEO_URL+movies?.getId())
 
                         }
 
                     })
+
                     Glide.with(this@DetailActivity)
                         .load(YOUTUBE_THUMBNAIL_URL + trailer.getKey())
-                        .placeholder(R.drawable.abc_ic_go_search_api_material)
+                        .placeholder(R.drawable.youtube)
                         .into(thumbnail)
 
                     movieTrailers.addView(parent)
@@ -201,12 +212,26 @@ class DetailActivity : AppCompatActivity() {
 
     private fun showTrailer(url: String) {
 
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-            startActivity(intent)
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        startActivity(intent)
 
-            /*val intent = Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v=" + movieID))
+        /*val intent = Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v=" + movieID))
             startActivity(intent)*/
+    }
+
+
+    private fun populateTrailers(mMovieTrailers:ArrayList<Videos>){
+        if(mMovieTrailers.size >0){
+            mtrailerAdapter= TrailerAdapter(mMovieTrailers,object: TrailerAdapter.OnItemClickListener{
+                override fun onItemClicked(trailer: Videos) {
+                    val intent=Intent(Intent.ACTION_VIEW,Uri.parse("http://www.youtube.com/watch?v=" +trailer.getKey()))
+                    startActivity(intent)
+                }
+            })
+            detailsRv.adapter=mtrailerAdapter
+
         }
+    }
 
 
     override fun onSupportNavigateUp(): Boolean {
@@ -214,11 +239,11 @@ class DetailActivity : AppCompatActivity() {
         return true
     }
 
-    private fun addMovieToFavorite(){
-       // val movieId=movies.getId()
-        val sharedPreferences= getSharedPreferences(FavHelper.CONTENT_AUTHORITY,Context.MODE_PRIVATE)
-        val editor=sharedPreferences.edit()
-        editor.putInt(movies.getId().toString(),movieID)
+    private fun addMovieToFavorite() {
+        // val movieId=movies.getId()
+        val sharedPreferences = getSharedPreferences(FavHelper.CONTENT_AUTHORITY, Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putInt(movies?.getId().toString(), movieID)
         editor.apply()
         saveFavorite()
 
@@ -227,10 +252,9 @@ class DetailActivity : AppCompatActivity() {
 
     }
 
-    private fun saveFavorite(){
-        lateinit var favorites:Movies
-        // Create a ContentValues object where column names are the keys, and current movie
-        // attributes are the values.
+
+    private fun saveFavorite() {
+        lateinit var favorites: Movies
         val values = ContentValues()
         values.put(FavHelper.COLUMN_TITLE, favorites.getTitle())
         values.put(FavHelper.COLUMN_POSTER_PATH, favorites.getPosterPath())
@@ -239,22 +263,42 @@ class DetailActivity : AppCompatActivity() {
         values.put(FavHelper.COLUMN_MOVIEID, favorites.getId())
         favoriteDbHelper?.addFavorite(favorites)
 
-        val newUri: Uri?  = contentResolver.insert(FavHelper.CONTENT_URI, values)
+        val newUri: Uri? = contentResolver.insert(FavHelper.CONTENT_URI, values)
 
         if (newUri == null) {
             saveMovieRecordNumber = SAVE_MOVIE_FAIL
-            Toast.makeText(this,"Movie Failed",Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Movie Failed", Toast.LENGTH_SHORT).show()
         } else {
             saveMovieRecordNumber = SAVE_MOVIE_SUCCESS
-            Toast.makeText(this,"Movie Successfully",Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Movie Successfully", Toast.LENGTH_SHORT).show()
         }
     }
 
+    //yeni eklenen
+    private fun getNetworkınfo(): Boolean {
+        val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val activeNetworkInfo=connectivityManager.activeNetworkInfo
+        if(  activeNetworkInfo != null && activeNetworkInfo.isConnected){
+            return true
+        }
+        return true
+    }
 
+    override fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle?) {
+        super.onSaveInstanceState(outState, outPersistentState)
+        outState.putSerializable("movie",movies)
+        if(getNetworkınfo()){
+            outState.putSerializable("movie_trailers",mtrailerList)
 
+        }
+
+    }
 
 
 }
+
+
+
 
 
    /* @RequiresApi(Build.VERSION_CODES.P)
@@ -273,7 +317,10 @@ class DetailActivity : AppCompatActivity() {
         favorites.setVoteAverage(rate)
         favorites.setOverview(overvieW)
 
-        favoriteDbHelper?.addFavorite(favorites)*/
+        favoriteDbHelper?.addFavorite(favorites)
+        }
+        */
+
 
 
 

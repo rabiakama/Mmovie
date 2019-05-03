@@ -5,9 +5,10 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 
-class Movies() : Parcelable {
+class Movies() : Parcelable, Serializable {
     @SerializedName("poster_path")
     private var  posterPath: String?=null
     @SerializedName("adult")

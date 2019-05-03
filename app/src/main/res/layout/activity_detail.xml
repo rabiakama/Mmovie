@@ -128,7 +128,6 @@
                     android:layout_alignParentEnd="true"/>
 
 
-
             <TextView
                     android:id="@+id/trailersLabel"
                     android:layout_width="match_parent"
@@ -162,8 +161,8 @@
         </RelativeLayout>
 
 
-    </android.support.v4.widget.NestedScrollView>
 
+    </android.support.v4.widget.NestedScrollView>
     <android.support.v7.widget.RecyclerView
             android:id="@+id/detailsRv"
             android:layout_width="match_parent"
@@ -175,6 +174,9 @@
             android:overScrollMode="never"
             android:paddingBottom="16dp"
             app:layout_behavior="android.support.design.widget.AppBarLayout$ScrollingViewBehavior"/>
+
+
+
 
 
 
