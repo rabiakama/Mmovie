@@ -19,6 +19,7 @@ You can see through movie posters, check movie details, watch movie trailers and
 - Glide
 - OkHttp3
 - Mockito-kotlin
+- Espresso-test
 
 # Screenshots
  All Movies
