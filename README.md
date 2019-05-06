@@ -25,7 +25,7 @@ You can see through movie posters, check movie details, watch movie trailers and
 
 Trailer
 
-<img src="https://user-images.githubusercontent.com/47974363/57216587-eff69d00-6ff8-11e9-86c8-70e52687e5d9.png" width="44%"/>
+<img src="" width="44%"/>
 
  Upcoming Movies
 
