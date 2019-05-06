@@ -23,6 +23,10 @@ You can see through movie posters, check movie details, watch movie trailers and
 
 <img src="https://user-images.githubusercontent.com/47974363/57216522-b6be2d00-6ff8-11e9-8f5d-33386bb3721a.png" width="44%"/>
 
+Trailer
+
+<img src="https://user-images.githubusercontent.com/47974363/57216587-eff69d00-6ff8-11e9-86c8-70e52687e5d9.png" width="44%"/>
+
  Upcoming Movies
 
 <img src="https://user-images.githubusercontent.com/47974363/57210697-44445180-6fe6-11e9-935a-2db453aed17a.png" width="44%"/>
