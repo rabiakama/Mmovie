@@ -6,7 +6,7 @@ This app is helps you to discover ;
 
 ### -Popular Movies
 ### -Top Rated Movies
-### -Upcoming Movies.
+### -Now Playing Movies.
 
 You can see through movie posters, check movie details, watch movie trailers and create a list of your favorite movies.
 
