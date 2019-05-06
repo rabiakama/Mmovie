@@ -2,6 +2,13 @@
 
 
 This android application displays a list of movies taken from "TheMovieDB" service.
+This app is helps you to discover ;
+
+### -Popular Movies
+### -Top Rated Movies
+### -Upcoming Movies.
+
+You can see through movie posters, check movie details, watch movie trailers and create a list of your favorite movies.
 
 # Screenshots
  All Movies
