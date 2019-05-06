@@ -10,6 +10,16 @@ This app is helps you to discover ;
 
 You can see through movie posters, check movie details, watch movie trailers and create a list of your favorite movies.
 
+# Used Libraries:
+- [RxJava2]
+- [RxAndroid]
+- [Retrofit2]
+- [Picasso]
+- [Android architecture components]
+- [Glide]
+- [OkHttp3]
+- [Mockito-kotlin]
+
 # Screenshots
  All Movies
 
