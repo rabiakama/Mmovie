@@ -4,13 +4,17 @@
 This android application displays a list of movies taken from "TheMovieDB" service.
 
 # Screenshots
+ All Movies
 
-1.
+<img src="https://user-images.githubusercontent.com/47974363/57146252-92323d00-6dcd-11e9-833a-9e4afdb09518.png" width="44%"/>
 
-![device-2019-05-02-170531](https://user-images.githubusercontent.com/47974363/57146252-92323d00-6dcd-11e9-833a-9e4afdb09518.png)
+ Detail Page2
+
+<img src="https://user-images.githubusercontent.com/47974363/57210198-7359c380-6fe4-11e9-8e89-df63384bd926.png" width="44%"/>
+
+ Upcoming Movies
+
+<img src="https://user-images.githubusercontent.com/47974363/57210697-44445180-6fe6-11e9-935a-2db453aed17a.png" width="44%"/>
 
 
 
-2. 
-
-![device-2019-05-02-170709](https://user-images.githubusercontent.com/47974363/57146104-4384a300-6dcd-11e9-92af-dadacbcf5491.png)
