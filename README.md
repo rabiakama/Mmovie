@@ -13,7 +13,7 @@ You can see through movie posters, check movie details, watch movie trailers and
 # Screenshots
  All Movies
 
-<img src="https://user-images.githubusercontent.com/47974363/57146252-92323d00-6dcd-11e9-833a-9e4afdb09518.png" width="44%"/>
+<img src="https://user-images.githubusercontent.com/47974363/57233232-eab04700-7026-11e9-9537-4e00d3a7b4a9.png" width="44%"/>
 
  Detail Page
 
@@ -27,13 +27,13 @@ Trailer
 
 <img src="https://user-images.githubusercontent.com/47974363/57216816-9b9fed00-6ff9-11e9-9227-dd322aab27af.png" width="44%"/>
 
- Upcoming Movies
+ Now Playing Movies
 
-<img src="https://user-images.githubusercontent.com/47974363/57210697-44445180-6fe6-11e9-935a-2db453aed17a.png" width="44%"/>
+<img src="https://user-images.githubusercontent.com/47974363/57233290-061b5200-7027-11e9-82fe-af4b8724f76f.png" width="44%"/>
 
  Search a Movie
  
- <img src="https://user-images.githubusercontent.com/47974363/57211252-460f1480-6fe8-11e9-9a37-eb43fbf331af.png" width="44%"/>
+ <img src="https://user-images.githubusercontent.com/47974363/57233359-264b1100-7027-11e9-9f23-78172ce18544.png" width="44%"/>
 
 
 
