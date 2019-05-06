@@ -68,7 +68,6 @@ class MoviesAdapter(var movielist:MutableList<Movies>,val itemClickListener: OnI
         notifyDataSetChanged()
     }
 
-
     override fun getItemCount(): Int {
         return movielist.size
     }

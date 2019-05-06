@@ -9,6 +9,7 @@ import android.content.res.Configuration
 import android.database.sqlite.SQLiteDatabase
 import android.os.AsyncTask
 import android.os.Bundle
+import android.os.Handler
 import android.support.v7.app.AppCompatActivity
 import android.widget.Toast
 import android.view.View
@@ -24,6 +25,8 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.AbsListView
 import android.support.v7.widget.SearchView
+import android.widget.AdapterView
+import android.widget.LinearLayout
 import com.example.myapplication.model.Movies
 import com.example.myapplication.model.MoviesResponse
 import com.example.myapplication.repository.FavHelper
@@ -38,6 +41,13 @@ class MainActivity : AppCompatActivity(),ComponentCallbacks2,MoviesAdapter.OnIte
     var totalItem: Int? = null
     var scrollItem: Int? = null
     var loading: Boolean = false
+
+    var pastVisiblesItems: Int = 0
+    var visibleItemCount: Int = 0
+    var totalItemCount: Int = 0
+    val shownInOneScreen=20
+    lateinit var items: ArrayList<String>
+
     private val MOVIES = 0
     private val POPULAR_TASK = 1
     private val UPCOMING_TASK = 2
@@ -52,12 +62,16 @@ class MainActivity : AppCompatActivity(),ComponentCallbacks2,MoviesAdapter.OnIte
     private var favoriteDbHelper: FavHelper? = null
     private lateinit var searchView: SearchView
     private val activity = this@MainActivity
+    private val signsData = mutableListOf<Movies>()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         repository = Repository(Client.getClient()!!.create(Api::class.java))
+
+        var mLayoutManager = LinearLayoutManager(this, LinearLayout.VERTICAL, false)
+        recylerView_main.layoutManager = mLayoutManager
 
 
         if (savedInstanceState != null) {
@@ -66,6 +80,10 @@ class MainActivity : AppCompatActivity(),ComponentCallbacks2,MoviesAdapter.OnIte
             initViews()
         }
 
+        items=ArrayList<String>()
+        for (i in 1..shownInOneScreen){
+            items.add("Item: $i")
+        }
 
         recylerView_main.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -126,6 +144,33 @@ class MainActivity : AppCompatActivity(),ComponentCallbacks2,MoviesAdapter.OnIte
             }
             false
         }
+
+       /* recylerView_main.addOnScrollListener(object:RecyclerView.OnScrollListener(){
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                if(dy>0){
+                    visibleItemCount=mLayoutManager.childCount
+                    totalItemCount=mLayoutManager.itemCount
+                    pastVisiblesItems=mLayoutManager.findFirstCompletelyVisibleItemPosition()
+                    if(visibleItemCount + pastVisiblesItems >= totalItemCount){
+                        if(!loading){
+                            loading=true
+                            loading_indicator.visibility=View.VISIBLE
+                            Handler().postDelayed({
+                                for(i in totalItemCount + 1..totalItemCount +shownInOneScreen){
+                                    items.add("Item:$i")
+                                }
+                                moviesAdapter?.notifyDataSetChanged()
+                                loading_indicator.visibility=View.GONE
+                                loading=false
+                            },1000)
+
+                        }
+                    }
+
+                }
+            }
+        })*/
+
     }
 
     /*private fun searchCode(){
@@ -390,7 +435,7 @@ class MainActivity : AppCompatActivity(),ComponentCallbacks2,MoviesAdapter.OnIte
     }
 
     private fun getAllFav(){
-    class AsyncTaskExample() : AsyncTask<Void, Void, Void>() {
+    class AsyncTaskExample : AsyncTask<Void, Void, Void>() {
         override fun doInBackground(vararg params: Void?): Void? {
             arraylistmovies.clear()
             arraylistmovies.addAll(favoriteDbHelper!!.getAllFavorite())

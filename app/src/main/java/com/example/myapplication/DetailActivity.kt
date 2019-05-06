@@ -2,6 +2,7 @@ package com.example.myapplication
 
 
 
+import android.app.PendingIntent.getActivity
 import android.content.*
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
@@ -30,6 +31,7 @@ import android.widget.Toast
 import com.example.myapplication.adapter.TrailerAdapter
 import com.example.myapplication.repository.FavHelper
 import com.example.myapplication.repository.OnGetTrailersCallback
+import kotlinx.android.synthetic.main.videos_row.*
 import org.json.JSONObject
 
 
@@ -44,8 +46,10 @@ class DetailActivity : AppCompatActivity() {
     private val SAVE_MOVIE_SUCCESS = 10
     private val SAVE_MOVIE_FAIL = 11
     private var movies: Movies?=null
+    //private var favorite:Movies?=null
     private var mtrailerList: ArrayList<Videos>?= arrayListOf()
     lateinit var mtrailerAdapter: TrailerAdapter
+    private val IS_FAVORITE = "isFavorite"
     private var movieID: Int = 0
     var MOVIE_ID = "movie_id"
 
@@ -79,29 +83,50 @@ class DetailActivity : AppCompatActivity() {
         }*/
 
 
-        favorite_button.setOnClickListener {
+        favorite_button.setOnClickListener (
             object : View.OnClickListener {
-                override fun onClick(v: View) {
-                    val favorite: Boolean? = null
-                    if (favorite!!) {
-                        addMovieToFavorite()
+                override fun onClick(v: View?) {
+                    val favorite:Boolean=false
+                    if(favorite){
+                        val editor=getSharedPreferences(" com.example.myapplication.DetailActivity", Context.MODE_PRIVATE).edit()
+                        editor.putBoolean("Favorite Added",true)
+                        editor.apply()
+                        saveFavorite()
+                        Toast.makeText(this@DetailActivity,"Added to Favorite",Toast.LENGTH_SHORT).show()
+
+                    }else{
+                        val moviId=intent.extras.getInt("id")
+                        favoriteDbHelper?.deleteFavorite(moviId)
+                        val editor=getSharedPreferences(" com.example.myapplication.DetailActivity", Context.MODE_PRIVATE).edit()
+                        editor.putBoolean("Favorite Removed",true)
+                        editor.apply()
+                        Toast.makeText(this@DetailActivity,"Removed from Favorite",Toast.LENGTH_SHORT).show()
+
+
                     }
 
                 }
-            }
+                /* override fun onClick(v: View) {
+                     val favorite: Boolean? = null
+                     if (favorite!!) {
+                         addMovieToFavorite()
+                     }
+
+                 }*/
+
+            })
+            initView()
         }
 
 
-    }
-
 
     private fun initView() {
-        val adapter: TrailerAdapter? = null
+        val adapter: MoviesAdapter? = null
         val mLayoutManager = LinearLayoutManager(applicationContext)
         detailsRv.layoutManager = mLayoutManager
         detailsRv.adapter = adapter
         adapter?.notifyDataSetChanged()
-        //loadTrailer()
+        loadDetail()
 
     }
 
@@ -139,7 +164,7 @@ class DetailActivity : AppCompatActivity() {
                 vote_average.text = movie.getVoteAverage()!!.toDouble().toString()
                 original_language.text = movie.getOriginalLanguage()
                 detailoverview.text = movie.getOverview()
-                loadTrailer()
+                loadTrailer(movie)
                 if (!isFinishing) {
                     Glide.with(this@DetailActivity)
                         .load(BACK_DROP_URL + movie.getPosterPath())
@@ -175,7 +200,7 @@ class DetailActivity : AppCompatActivity() {
 
     }*/
 
-    private fun loadTrailer() {
+    private fun loadTrailer(movie:MovieDetail) {
         repository.getTrailers(movieID, object : OnGetTrailersCallback {
             override fun onSuccess(trailers: Array<Videos>?) {
                 trailersLabel.visibility = View.VISIBLE
@@ -187,7 +212,8 @@ class DetailActivity : AppCompatActivity() {
 
                     thumbnail.setOnClickListener(object : View.OnClickListener {
                         override fun onClick(v: View?) {
-                            showTrailer(YOUTUBE_VIDEO_URL+movies?.getId())
+
+                            showTrailer(YOUTUBE_VIDEO_URL+trailer.getKey())
 
                         }
 
@@ -196,6 +222,7 @@ class DetailActivity : AppCompatActivity() {
                     Glide.with(this@DetailActivity)
                         .load(YOUTUBE_THUMBNAIL_URL + trailer.getKey())
                         .placeholder(R.drawable.youtube)
+                        .centerCrop()
                         .into(thumbnail)
 
                     movieTrailers.addView(parent)
@@ -220,20 +247,6 @@ class DetailActivity : AppCompatActivity() {
     }
 
 
-    private fun populateTrailers(mMovieTrailers:ArrayList<Videos>){
-        if(mMovieTrailers.size >0){
-            mtrailerAdapter= TrailerAdapter(mMovieTrailers,object: TrailerAdapter.OnItemClickListener{
-                override fun onItemClicked(trailer: Videos) {
-                    val intent=Intent(Intent.ACTION_VIEW,Uri.parse("http://www.youtube.com/watch?v=" +trailer.getKey()))
-                    startActivity(intent)
-                }
-            })
-            detailsRv.adapter=mtrailerAdapter
-
-        }
-    }
-
-
     override fun onSupportNavigateUp(): Boolean {
         onBackPressed()
         return true
@@ -255,7 +268,20 @@ class DetailActivity : AppCompatActivity() {
 
     private fun saveFavorite() {
         lateinit var favorites: Movies
-        val values = ContentValues()
+        val rate=movies?.getVoteAverage()
+        val thumbnail=""
+        val movieName=""
+        val synopsis=""
+
+        favorites.setId(movieID)
+        favorites.setOriginalTitle(movieName)
+        favorites.setPosterPath(thumbnail)
+        favorites.setVoteAverage(rate)
+        favorites.setOverview(synopsis)
+        favoriteDbHelper?.addFavorite(favorites)
+
+
+        /*val values = ContentValues()
         values.put(FavHelper.COLUMN_TITLE, favorites.getTitle())
         values.put(FavHelper.COLUMN_POSTER_PATH, favorites.getPosterPath())
         values.put(FavHelper.COLUMN_PLOT_SYNOPSIS, favorites.getOverview())
@@ -271,7 +297,21 @@ class DetailActivity : AppCompatActivity() {
         } else {
             saveMovieRecordNumber = SAVE_MOVIE_SUCCESS
             Toast.makeText(this, "Movie Successfully", Toast.LENGTH_SHORT).show()
-        }
+        }*/
+    }
+
+
+    private fun checkIsMovieAlreadyInFav(movieId:String): Boolean {
+        val database=favoriteDbHelper?.readableDatabase
+        val selectString="SELECT *FROM" +FavHelper.TABLE_NAME + "WHERE"
+         FavHelper.COLUMN_MOVIEID + "=?"
+
+        val cursor=database?.rawQuery(selectString, arrayOf(movieId))
+        //String[] {movieıd} yerine arrayOf
+        val count=cursor?.count
+        cursor?.close()
+        database?.close()
+        return count!! >0
     }
 
     //yeni eklenen
