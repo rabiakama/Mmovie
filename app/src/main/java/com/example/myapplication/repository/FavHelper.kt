@@ -80,7 +80,7 @@ class FavHelper(context: Context, name: String?,
         values.put(COLUMN_MOVIEID, movie.getId())
         values.put(COLUMN_TITLE, movie.getOriginalTitle())
         values.put(COLUMN_RELEASE_DATE,movie.getReleaseDate())
-        values.put(COLUMN_USERRATING, movie.getVoteAverage())
+        values.put(COLUMN_USERRATING, movie.getVoteAverage().toString())
         values.put(COLUMN_POSTER_PATH, movie.getPosterPath())
        // values.put(COLUMN_PLOT_SYNOPSIS, movie.getOverview())
 
@@ -120,7 +120,7 @@ class FavHelper(context: Context, name: String?,
         )
         if (cursor.moveToFirst()) {
             do {
-                lateinit var movie: Movies
+                val movie= Movies()
                 movie.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_MOVIEID))))
                 movie.setTitle(cursor.getString(cursor.getColumnIndex(COLUMN_TITLE)))
                 movie.setReleaseDate(cursor.getString(cursor.getColumnIndex(COLUMN_RELEASE_DATE)))

@@ -160,9 +160,16 @@ class DetailActivity : AppCompatActivity() {
         repository.getMovieDetail(movieID, object : OnGetMovieCallback {
             override fun onSuccess(movie: MovieDetail) {
 
+                val movies=Movies()
+                movies.setTitle(movie.getTitle().toString())
+                movies.setReleaseDate(movie.getReleaseDate().toString())
+                movies.setVoteAverage(movie.getVoteAverage())
+                movies.setOriginalLanguage(movie.getOriginalLanguage().toString())
+                movies.setOverview(movie.getOverview().toString())
+
                 detail_title.text = movie.getTitle()
                 releasedate.text = movie.getReleaseDate()
-                vote_average.text = movie.getVoteAverage()!!.toDouble().toString()
+                vote_average.text = movie.getVoteAverage()?.toString()
                 original_language.text = movie.getOriginalLanguage()
                 detailoverview.text = movie.getOverview()
                 loadTrailer(movie)
@@ -182,24 +189,6 @@ class DetailActivity : AppCompatActivity() {
         })
 
     }
-    /*private fun loadTrailerss() {
-        repository.getTrailerss().enqueue(object : retrofit2.Callback<VideosResponse> {
-            override fun onFailure(call: Call<VideosResponse>, t: Throwable) {
-                Toast.makeText(this@DetailActivity, "error", Toast.LENGTH_SHORT).show()
-            }
-
-            override fun onResponse(call: Call<VideosResponse>, response: Response<VideosResponse>) {
-                val list: ArrayList<Videos> = arrayListOf()
-                val trailerAdapter: TrailerAdapter? = null
-                list.clear()
-                list.addAll(response.body()!!.results!!)
-                detailsRv.adapter = trailerAdapter
-                detailsRv.smoothScrollToPosition(0)
-            }
-
-        })
-
-    }*/
 
     private fun loadTrailer(movie:MovieDetail) {
         repository.getTrailers(movieID, object : OnGetTrailersCallback {
@@ -270,14 +259,14 @@ class DetailActivity : AppCompatActivity() {
     private fun saveFavorite() {
         val favorites = Movies()
         val rate=movies?.getVoteAverage()
-        val thumbnail=""
-        val movieName=""
-        val releasedate=""
+        val thumbnail=movies?.getPosterPath()
+        val movieName=movies?.getTitle()
+        val releasedate=movies?.getReleaseDate()
 
         favorites.setId(movieID)
-        favorites.setOriginalTitle(movieName)
-        favorites.setPosterPath(thumbnail)
-        favorites.setReleaseDate(releasedate)
+        favorites.setOriginalTitle(movieName.toString())
+        favorites.setPosterPath(thumbnail.toString())
+        favorites.setReleaseDate(releasedate.toString())
         favorites.setVoteAverage(rate)
         //favorites?.setOverview(synopsis)
         favoriteDbHelper?.addFavorite(favorites)
