@@ -160,12 +160,15 @@ class DetailActivity : AppCompatActivity() {
         repository.getMovieDetail(movieID, object : OnGetMovieCallback {
             override fun onSuccess(movie: MovieDetail) {
 
-                val movies=Movies()
-                movies.setTitle(movie.getTitle().toString())
-                movies.setReleaseDate(movie.getReleaseDate().toString())
-                movies.setVoteAverage(movie.getVoteAverage())
-                movies.setOriginalLanguage(movie.getOriginalLanguage().toString())
-                movies.setOverview(movie.getOverview().toString())
+                 movies=Movies()
+
+                movies=Movies()
+                movies?.setTitle(movie.getTitle().toString())
+                movies?.setReleaseDate(movie.getReleaseDate().toString())
+                movies?.setVoteAverage(movie.getVoteAverage())
+                movies?.setPosterPath(movie.getPosterPath().toString())
+                movies?.setOriginalLanguage(movie.getOriginalLanguage().toString())
+                movies?.setOverview(movie.getOverview().toString())
 
                 detail_title.text = movie.getTitle()
                 releasedate.text = movie.getReleaseDate()
