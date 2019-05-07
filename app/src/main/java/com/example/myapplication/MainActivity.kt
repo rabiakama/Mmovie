@@ -195,7 +195,7 @@ class MainActivity : AppCompatActivity(),ComponentCallbacks2,MoviesAdapter.OnIte
         recylerView_main.itemAnimator = DefaultItemAnimator()
         recylerView_main.adapter = moviesAdapter
         moviesAdapter?.notifyDataSetChanged()
-        favoriteDbHelper = FavHelper(this.activity, "favorite.db", factory, 1)
+        favoriteDbHelper = FavHelper(this.activity, "favorite.db", factory, 2)
 
         getAllFavorite()
     }

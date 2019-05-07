@@ -22,14 +22,14 @@ class FavHelper(context: Context, name: String?,
 
     companion object {
 
-        private val DATABASE_VERSION = 1
+        private val DATABASE_VERSION = 2
         private val DATABASE_NAME = "favorite.db"
         val TABLE_PRODUCTS = "FAVORITES"
 
         val _ID = "_id"
         val TABLE_NAME = "favorite"
         val COLUMN_TITLE = "title"
-        //val COLUMN_RELEASE_DATE ="release_date"
+        val COLUMN_RELEASE_DATE ="release_date"
         val COLUMN_MOVIEID = "movie_id"
         val COLUMN_USERRATING = "vote_average"
         val COLUMN_POSTER_PATH = "poster_path"
@@ -60,11 +60,11 @@ class FavHelper(context: Context, name: String?,
                 _ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                 COLUMN_MOVIEID + " INTEGER, " +
                 COLUMN_TITLE + " TEXT NOT NULL, " +
-                //COLUMN_RELEASE_DATE + " TEXT NOT NULL, " +
+                COLUMN_RELEASE_DATE + " TEXT NOT NULL, " +
                 COLUMN_USERRATING + " REAL NOT NULL, " +
-                COLUMN_POSTER_PATH + " TEXT NOT NULL, " +
+                COLUMN_POSTER_PATH + " TEXT NOT NULL " +
                 //COLUMN_PLOT_SYNOPSIS + " TEXT NOT NULL" +
-                "); "
+                ");"
         db.execSQL(SQL_CREATE_FAVORITE_TABLE)
     }
 
@@ -79,12 +79,12 @@ class FavHelper(context: Context, name: String?,
         val values = ContentValues()
         values.put(COLUMN_MOVIEID, movie.getId())
         values.put(COLUMN_TITLE, movie.getOriginalTitle())
-       // values.put(COLUMN_RELEASE_DATE,movie.getReleaseDate())
+        values.put(COLUMN_RELEASE_DATE,movie.getReleaseDate())
         values.put(COLUMN_USERRATING, movie.getVoteAverage())
         values.put(COLUMN_POSTER_PATH, movie.getPosterPath())
        // values.put(COLUMN_PLOT_SYNOPSIS, movie.getOverview())
 
-        db.insert(TABLE_NAME, null, values)
+        db.insert(TABLE_NAME, "", values)
         db.close()
     }
 
@@ -103,7 +103,7 @@ class FavHelper(context: Context, name: String?,
             _ID,
             COLUMN_MOVIEID,
             COLUMN_TITLE,
-           // COLUMN_RELEASE_DATE,
+            COLUMN_RELEASE_DATE,
             COLUMN_USERRATING,
             COLUMN_POSTER_PATH
            // COLUMN_PLOT_SYNOPSIS
@@ -123,7 +123,7 @@ class FavHelper(context: Context, name: String?,
                 lateinit var movie: Movies
                 movie.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_MOVIEID))))
                 movie.setTitle(cursor.getString(cursor.getColumnIndex(COLUMN_TITLE)))
-               // movie.setReleaseDate(cursor.getString(cursor.getColumnIndex(COLUMN_RELEASE_DATE)))
+                movie.setReleaseDate(cursor.getString(cursor.getColumnIndex(COLUMN_RELEASE_DATE)))
                 movie.setVoteAverage((cursor.getDouble(cursor.getColumnIndex(COLUMN_USERRATING))))
                 movie.setPosterPath(cursor.getString(cursor.getColumnIndex(COLUMN_POSTER_PATH)))
                // movie.setOverview(cursor.getString(cursor.getColumnIndex(COLUMN_PLOT_SYNOPSIS)))

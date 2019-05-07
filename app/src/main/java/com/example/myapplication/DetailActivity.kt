@@ -2,12 +2,11 @@ package com.example.myapplication
 
 
 
-import android.app.PendingIntent.getActivity
 import android.content.*
+import android.database.sqlite.SQLiteDatabase
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.net.Uri
-import android.os.AsyncTask
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.PersistableBundle
@@ -15,24 +14,23 @@ import android.os.PersistableBundle
 import android.support.design.widget.AppBarLayout
 import android.support.design.widget.CollapsingToolbarLayout
 import com.bumptech.glide.Glide
-import com.example.myapplication.model.*
 import com.example.myapplication.repository.OnGetMovieCallback
 import com.example.myapplication.repository.Repository
 import com.example.myapplication.service.Api
 import com.example.myapplication.service.Client
 import kotlinx.android.synthetic.main.activity_detail.*
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.view.MotionEvent
+import com.example.myapplication.model.Movies
 import android.view.View
 import android.widget.ImageView
 
 import android.widget.Toast
 import com.example.myapplication.adapter.TrailerAdapter
+import com.example.myapplication.model.MovieDetail
+import com.example.myapplication.model.Videos
 import com.example.myapplication.repository.FavHelper
 import com.example.myapplication.repository.OnGetTrailersCallback
-import kotlinx.android.synthetic.main.videos_row.*
-import org.json.JSONObject
+
 
 
 @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
@@ -52,8 +50,9 @@ class DetailActivity : AppCompatActivity() {
     private val IS_FAVORITE = "isFavorite"
     private var movieID: Int = 0
     var MOVIE_ID = "movie_id"
+    val factory: SQLiteDatabase.CursorFactory? = null
 
-    private val favoriteDbHelper: FavHelper? = null
+    private  var favoriteDbHelper: FavHelper?=null
 
 
     private lateinit var repository: Repository
@@ -64,6 +63,7 @@ class DetailActivity : AppCompatActivity() {
 
         movieID = intent.getIntExtra("MOVIE_ID", movieID)
         repository = Repository(Client.getClient()!!.create(Api::class.java))
+        favoriteDbHelper = FavHelper(this, "favorite.db", factory, 2)
 
         supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
@@ -268,38 +268,21 @@ class DetailActivity : AppCompatActivity() {
 
 
     private fun saveFavorite() {
-        val favorites: Movies?=null
+        val favorites = Movies()
         val rate=movies?.getVoteAverage()
         val thumbnail=""
         val movieName=""
-        //val releasedate=""
+        val releasedate=""
 
-        favorites?.setId(movieID)
-        favorites?.setOriginalTitle(movieName)
-        favorites?.setPosterPath(thumbnail)
-        //favorites?.setReleaseDate(releasedate)
-        favorites?.setVoteAverage(rate)
+        favorites.setId(movieID)
+        favorites.setOriginalTitle(movieName)
+        favorites.setPosterPath(thumbnail)
+        favorites.setReleaseDate(releasedate)
+        favorites.setVoteAverage(rate)
         //favorites?.setOverview(synopsis)
-        favoriteDbHelper?.addFavorite(favorites!!)
-
-
-        /*val values = ContentValues()
-        values.put(FavHelper.COLUMN_TITLE, favorites.getTitle())
-        values.put(FavHelper.COLUMN_POSTER_PATH, favorites.getPosterPath())
-        values.put(FavHelper.COLUMN_PLOT_SYNOPSIS, favorites.getOverview())
-        values.put(FavHelper.COLUMN_USERRATING, favorites.getVoteAverage())
-        values.put(FavHelper.COLUMN_MOVIEID, favorites.getId())
         favoriteDbHelper?.addFavorite(favorites)
 
-        val newUri: Uri? = contentResolver.insert(FavHelper.CONTENT_URI, values)
 
-        if (newUri == null) {
-            saveMovieRecordNumber = SAVE_MOVIE_FAIL
-            Toast.makeText(this, "Movie Failed", Toast.LENGTH_SHORT).show()
-        } else {
-            saveMovieRecordNumber = SAVE_MOVIE_SUCCESS
-            Toast.makeText(this, "Movie Successfully", Toast.LENGTH_SHORT).show()
-        }*/
     }
 
 
