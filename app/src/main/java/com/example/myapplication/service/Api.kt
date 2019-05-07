@@ -1,6 +1,7 @@
 package com.example.myapplication.service
 
 import com.example.myapplication.model.*
+import io.reactivex.Observable
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -14,6 +15,9 @@ interface Api {
         const val DEFAULT_LANGUAGE = "pt-BR"
         const val DEFAULT_REGION = "BR"
     }
+
+
+    fun fetchMovies(): Observable<MoviesResponse>
 
     @GET("genre/movie/list")
     fun genres(

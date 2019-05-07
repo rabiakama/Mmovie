@@ -1,18 +1,16 @@
 package com.example.myapplication.repository
 
 import android.arch.core.executor.testing.InstantTaskExecutorRule
+import com.bumptech.glide.load.engine.Resource
 import com.example.myapplication.model.Movies
-import com.example.myapplication.model.MoviesResponse
 import com.example.myapplication.service.Api
-import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import org.mockito.Mockito
-import retrofit2.Response
-import rx.Single
+
+
 
 
 @RunWith(JUnit4::class)
@@ -39,6 +37,10 @@ class RepositoryTest {
         movies.setVoteAverage(5.0)
         movies.setReleaseDate("2009")
     }
+
+
+
+
 
 
 

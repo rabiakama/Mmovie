@@ -16,8 +16,8 @@
 
     <item
             app:icon="@drawable/ic_local_play_black_24dp"
-            android:id="@+id/upcoming_movies"
-            android:title="@string/upcoming_movies"/>
+            android:id="@+id/playing_movies"
+            android:title="@string/playing_movies"/>
 
     <item
             app:icon="@drawable/ic_local_play_black_24dp"

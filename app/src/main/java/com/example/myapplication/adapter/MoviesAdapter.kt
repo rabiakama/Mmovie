@@ -64,6 +64,7 @@ class MoviesAdapter(var movielist:MutableList<Movies>,val itemClickListener: OnI
     fun setMovies(movie: ArrayList<Movies>) {
        // movielist = movie
 
+        movielist.clear()
         this.movielist.addAll(movie)
         notifyDataSetChanged()
     }

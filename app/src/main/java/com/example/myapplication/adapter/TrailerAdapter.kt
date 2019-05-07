@@ -33,9 +33,7 @@ class TrailerAdapter(private  var trailerList:ArrayList<Videos>, private val ite
     override fun onBindViewHolder(holder: ViewHolderV, position: Int) {
         //p0.titletxt.setText(trailerList.get(p1).getName())
         val trailer = trailerList[position]
-        if (itemClickListener != null) {
-            holder.bindTo(trailer, itemClickListener)
-        }
+        holder.bindTo(trailer, itemClickListener)
 
     }
 

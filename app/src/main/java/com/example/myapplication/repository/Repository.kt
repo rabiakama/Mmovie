@@ -16,7 +16,7 @@ class Repository(private val api: Api) {
 
     fun getPopularMovies()=api.getPopularMovies(apiKey =  "534bc4143a626777d62c7d1ab8697aba",language = "en-US",page = 1,region="TR")
 
-    //fun getNowPlayingMovies()=api.getPopularMovies(apiKey =  "534bc4143a626777d62c7d1ab8697aba",language = "en-US",page = 1,region="TR")
+    fun getNowPlayingMovies()=api.getNowPlayingMovies(apiKey =  "534bc4143a626777d62c7d1ab8697aba",language = "en-US",page = 1,region="TR")
     fun getMovies()= api.getMovie(apiKey = "534bc4143a626777d62c7d1ab8697aba",language = "en-US",region = "TR",sortBy = "original_title.desc",page=1)
 
     //fun getDetails(movieId: Int) = api.getDetails( apiKey = "534bc4143a626777d62c7d1ab8697aba",language = "en-US",movieId = movieId)

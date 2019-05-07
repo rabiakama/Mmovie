@@ -15,8 +15,6 @@ import java.lang.Exception
 class TestApi {
 
     private lateinit var apiService:Api
-    private  var IMAGE_URL=""
-
 
     @Before
     fun initService(){

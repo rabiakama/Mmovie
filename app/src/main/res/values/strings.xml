@@ -5,6 +5,7 @@
     <string name="popular_movies">Popular</string>
     <string name="upcoming_movies">Upcoming</string>
     <string name="rated_movies">Top Rated</string>
+    <string name="playing_movies">Now Playing Movies</string>
     <string name="fav_movies">Favorite Movies</string>
     <string name="transition_name_details">details_image</string>
     <string name="search_hint">Search Name or Age</string>

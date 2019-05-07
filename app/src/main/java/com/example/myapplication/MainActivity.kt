@@ -50,11 +50,9 @@ class MainActivity : AppCompatActivity(),ComponentCallbacks2,MoviesAdapter.OnIte
 
     private val MOVIES = 0
     private val POPULAR_TASK = 1
-    private val UPCOMING_TASK = 2
+    //private val UPCOMING_TASK = 2
     private val TOP_RATED_TASK = 3
-    private val FAVORITE_TASK = 4
-    private val SEARCH = 5
-    //private val NOW_PLAYING_TASK = 3
+    private val NOW_PLAYING_TASK = 2
     private var moviesAdapter: MoviesAdapter? = null
     private var arraylistmovies: ArrayList<Movies> = arrayListOf()
     private lateinit var repository: Repository
@@ -62,8 +60,6 @@ class MainActivity : AppCompatActivity(),ComponentCallbacks2,MoviesAdapter.OnIte
     private var favoriteDbHelper: FavHelper? = null
     private lateinit var searchView: SearchView
     private val activity = this@MainActivity
-    private val signsData = mutableListOf<Movies>()
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -122,9 +118,9 @@ class MainActivity : AppCompatActivity(),ComponentCallbacks2,MoviesAdapter.OnIte
                     fetchMovies(POPULAR_TASK)
                     return@setOnNavigationItemSelectedListener true
                 }
-                R.id.upcoming_movies -> {
+                R.id.playing_movies -> {
                     recylerView_main.smoothScrollToPosition(0)
-                    fetchMovies(UPCOMING_TASK)
+                    fetchMovies(NOW_PLAYING_TASK)
                     return@setOnNavigationItemSelectedListener true
                 }
                 R.id.top_rated_movies -> {
@@ -140,9 +136,9 @@ class MainActivity : AppCompatActivity(),ComponentCallbacks2,MoviesAdapter.OnIte
                 }
 
 
-                else -> fetchMovies(POPULAR_TASK)
+                else -> return@setOnNavigationItemSelectedListener false
             }
-            false
+
         }
 
        /* recylerView_main.addOnScrollListener(object:RecyclerView.OnScrollListener(){
@@ -199,9 +195,9 @@ class MainActivity : AppCompatActivity(),ComponentCallbacks2,MoviesAdapter.OnIte
         recylerView_main.itemAnimator = DefaultItemAnimator()
         recylerView_main.adapter = moviesAdapter
         moviesAdapter?.notifyDataSetChanged()
-        favoriteDbHelper = FavHelper(baseContext, "favorite.db", factory, 1)
+        favoriteDbHelper = FavHelper(this.activity, "favorite.db", factory, 1)
 
-        getAllFav()
+        getAllFavorite()
     }
 
 
@@ -332,9 +328,9 @@ class MainActivity : AppCompatActivity(),ComponentCallbacks2,MoviesAdapter.OnIte
                 })
                 return true
             }
-            UPCOMING_TASK -> {
+            NOW_PLAYING_TASK -> {
 
-                repository.getComingMovies().enqueue(object : Callback<MoviesResponse> {
+                repository.getNowPlayingMovies().enqueue(object : Callback<MoviesResponse> {
                     override fun onResponse(call: Call<MoviesResponse>, response: retrofit2.Response<MoviesResponse>) {
                         if (response.isSuccessful && response.body() != null) {
                             arraylistmovies.clear()
@@ -374,27 +370,9 @@ class MainActivity : AppCompatActivity(),ComponentCallbacks2,MoviesAdapter.OnIte
                 })
                 return true
             }
-           /* SEARCH -> {
-                repository.getSearch().enqueue(object : Callback<MoviesResponse> {
-                    override fun onResponse(call: Call<MoviesResponse>, response: retrofit2.Response<MoviesResponse>) {
-                        if (response.isSuccessful && response.body() != null) {
-                            arraylistmovies.clear()
-                            arraylistmovies.addAll(response.body()!!.results!!)
-                            recylerView_main.layoutManager =
-                                LinearLayoutManager(this@MainActivity, LinearLayoutManager.VERTICAL, false)
-                            moviesAdapter = MoviesAdapter(arraylistmovies, this@MainActivity)
-                            recylerView_main.adapter = moviesAdapter
-                            recylerView_main.smoothScrollToPosition(0)
-                            //getDetails()
-                        }
-                    }
 
-                    override fun onFailure(call: retrofit2.Call<MoviesResponse>, t: Throwable) {
-                        Toast.makeText(this@MainActivity, "Error", Toast.LENGTH_SHORT).show()
-                    }
-                })
-                return true
-            }*/
+
+
             else -> return true
         }
     }
@@ -434,21 +412,22 @@ class MainActivity : AppCompatActivity(),ComponentCallbacks2,MoviesAdapter.OnIte
         }
     }
 
-    private fun getAllFav(){
-    class AsyncTaskExample : AsyncTask<Void, Void, Void>() {
-        override fun doInBackground(vararg params: Void?): Void? {
-            arraylistmovies.clear()
-            arraylistmovies.addAll(favoriteDbHelper!!.getAllFavorite())
 
-            return null
+    private fun getAllFavorite() {
+        class FavoritesTask : AsyncTask<Void, Void, Void>() {
+            override fun doInBackground(vararg params: Void): Void? {
+                arraylistmovies.clear()
+                arraylistmovies.addAll(favoriteDbHelper!!.getAllFavorite())
+
+                return null
+            }
+
+            override fun onPostExecute(aVoid: Void?) {
+                super.onPostExecute(aVoid)
+                moviesAdapter?.notifyDataSetChanged()
+            }
         }
-
-        override fun onPostExecute(result: Void?) {
-            super.onPostExecute(result)
-            moviesAdapter?.notifyDataSetChanged()
-        }
-    }
-
+        FavoritesTask().execute()
     }
 
 

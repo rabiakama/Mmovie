@@ -45,7 +45,7 @@ class DetailActivity : AppCompatActivity() {
     private var saveMovieRecordNumber: Int? = null
     private val SAVE_MOVIE_SUCCESS = 10
     private val SAVE_MOVIE_FAIL = 11
-    private var movies: Movies?=null
+    private  var movies:Movies?=null
     //private var favorite:Movies?=null
     private var mtrailerList: ArrayList<Videos>?= arrayListOf()
     lateinit var mtrailerAdapter: TrailerAdapter
@@ -86,8 +86,9 @@ class DetailActivity : AppCompatActivity() {
         favorite_button.setOnClickListener (
             object : View.OnClickListener {
                 override fun onClick(v: View?) {
-                    val favorite:Boolean=false
+                    val favorite:Boolean=true
                     if(favorite){
+
                         val editor=getSharedPreferences(" com.example.myapplication.DetailActivity", Context.MODE_PRIVATE).edit()
                         editor.putBoolean("Favorite Added",true)
                         editor.apply()
@@ -115,13 +116,13 @@ class DetailActivity : AppCompatActivity() {
                  }*/
 
             })
-            initView()
+            //initView()
         }
 
 
 
     private fun initView() {
-        val adapter: MoviesAdapter? = null
+        val adapter: TrailerAdapter? = null
         val mLayoutManager = LinearLayoutManager(applicationContext)
         detailsRv.layoutManager = mLayoutManager
         detailsRv.adapter = adapter
@@ -267,18 +268,19 @@ class DetailActivity : AppCompatActivity() {
 
 
     private fun saveFavorite() {
-        lateinit var favorites: Movies
+        val favorites: Movies?=null
         val rate=movies?.getVoteAverage()
         val thumbnail=""
         val movieName=""
-        val synopsis=""
+        //val releasedate=""
 
-        favorites.setId(movieID)
-        favorites.setOriginalTitle(movieName)
-        favorites.setPosterPath(thumbnail)
-        favorites.setVoteAverage(rate)
-        favorites.setOverview(synopsis)
-        favoriteDbHelper?.addFavorite(favorites)
+        favorites?.setId(movieID)
+        favorites?.setOriginalTitle(movieName)
+        favorites?.setPosterPath(thumbnail)
+        //favorites?.setReleaseDate(releasedate)
+        favorites?.setVoteAverage(rate)
+        //favorites?.setOverview(synopsis)
+        favoriteDbHelper?.addFavorite(favorites!!)
 
 
         /*val values = ContentValues()

@@ -1,10 +1,12 @@
 package com.example.myapplication
 
 import com.example.myapplication.model.Movies
+import com.example.myapplication.model.MoviesResponse
 import com.example.myapplication.repository.Repository
-import org.junit.Assert.assertNotEquals
-import org.junit.Assert.assertTrue
+import org.junit.Assert.*
 import org.junit.Test
+import org.mockito.Mock
+import org.mockito.Mockito
 
 
 class MovieDetailsTest{
@@ -38,5 +40,6 @@ class MovieDetailsTest{
         val isSelectedMovie=respo?.getMovies()
        // assertTrue(isSelectedMovie)
     }
+
 
 }
