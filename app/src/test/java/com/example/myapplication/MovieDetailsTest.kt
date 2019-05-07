@@ -31,14 +31,12 @@ class MovieDetailsTest{
         assertNotEquals(0,list?.toDouble())
     }
 
-    @Test
-    fun MoviesVoteAverage(){
-        val respo:Repository?=null
-        val movies=Movies()
-        movies.setVoteAverage(5.5)
 
-        val isSelectedMovie=respo?.getMovies()
-       // assertTrue(isSelectedMovie)
+    @Test
+    fun saveFavorite(){
+        val favorites = Movies()
+
+
     }
 
 

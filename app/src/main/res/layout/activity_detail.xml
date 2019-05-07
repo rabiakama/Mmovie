@@ -118,13 +118,12 @@
 
             <Button
                     android:id="@+id/favorite_button"
-                    android:layout_width="100dp"
+                    android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:text="Add Favorite"
                     android:layout_alignParentRight="true"
                     android:layout_below="@id/detailoverview"
                     app:layout_constraintLeft_toRightOf="@+id/releasedate"
-                    android:background="@color/pinky"
+                    android:background="@drawable/favorite"
                     android:layout_alignParentEnd="true"/>
 
 

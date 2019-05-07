@@ -23,7 +23,7 @@ class TestApi {
     }
 
     @Test
-    fun fetchMovieDetails() {
+    fun getMovieDetails() {
         val movies =Movies()
         apiService.getDetails(1,"","en-Us")
         Assert.assertEquals("Burning",movies.getTitle())

@@ -31,7 +31,17 @@ class RepositoryTest {
     }
 
     @Test
-    fun popularMovies(){
+    fun getPopularMovies(){
+        movieRepository.getPopularMovies()
+        movies.setTitle("null")
+        movies.setId(0)
+        movies.setVoteAverage(5.0)
+        movies.setReleaseDate("2009")
+    }
+
+    @Test
+    fun getNowPlayingMovies(){
+        movieRepository.getNowPlayingMovies()
         movies.setTitle("null")
         movies.setId(0)
         movies.setVoteAverage(5.0)
