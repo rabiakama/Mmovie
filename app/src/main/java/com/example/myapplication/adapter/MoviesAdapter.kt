@@ -97,7 +97,6 @@ class MoviesAdapter(var movielist:MutableList<Movies>,val itemClickListener: OnI
             voteaverage.text = mv.getVoteAverage().toString()
             itemView.setOnClickListener {
                 clickListener.onItemClicked(mv)
-                clickListener.onItemClicked(movlist!![adapterPosition])
             }
 
             Glide.with(itemView.context)
