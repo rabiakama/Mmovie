@@ -244,19 +244,7 @@ class DetailActivity : AppCompatActivity() {
         onBackPressed()
         return true
     }
-
-    private fun addMovieToFavorite() {
-        // val movieId=movies.getId()
-        val sharedPreferences = getSharedPreferences(FavHelper.CONTENT_AUTHORITY, Context.MODE_PRIVATE)
-        val editor = sharedPreferences.edit()
-        editor.putInt(movies?.getId().toString(), movieID)
-        editor.apply()
-        saveFavorite()
-
-        Toast.makeText(this@DetailActivity, "Added to your favorite", Toast.LENGTH_SHORT).show()
-
-
-    }
+    
 
 
     private fun saveFavorite() {
