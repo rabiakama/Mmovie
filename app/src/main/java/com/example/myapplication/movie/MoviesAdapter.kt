@@ -1,14 +1,13 @@
 package com.example.myapplication
 
 
-import android.content.Context
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import com.bumptech.glide.Glide
-import com.example.myapplication.model.Movies
+import com.example.myapplication.movie.Movies
 import kotlinx.android.synthetic.main.movie_item.view.*
 import android.widget.Filter
 import android.widget.Filterable
@@ -17,7 +16,7 @@ import android.widget.Filterable
 
 
 
-class MoviesAdapter(var movielist:MutableList<Movies>,val itemClickListener: OnItemClickListener):RecyclerView.Adapter<MoviesAdapter.ViewHolder>(),Filterable {
+class MoviesAdapter(var movielist:MutableList<Movies>, val itemClickListener: OnItemClickListener):RecyclerView.Adapter<MoviesAdapter.ViewHolder>(),Filterable {
     private var movlist: List<Movies>? = null
 
 
@@ -62,8 +61,6 @@ class MoviesAdapter(var movielist:MutableList<Movies>,val itemClickListener: OnI
 
 
     fun setMovies(movie: ArrayList<Movies>) {
-       // movielist = movie
-
         movielist.clear()
         this.movielist.addAll(movie)
         notifyDataSetChanged()

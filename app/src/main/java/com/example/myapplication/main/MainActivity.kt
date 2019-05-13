@@ -1,7 +1,8 @@
-package com.example.myapplication
+package com.example.myapplication.main
 
 
 import android.app.SearchManager
+import android.arch.lifecycle.ViewModelProviders
 import android.content.ComponentCallbacks2
 import android.content.Context
 import android.content.Intent
@@ -9,7 +10,6 @@ import android.content.res.Configuration
 import android.database.sqlite.SQLiteDatabase
 import android.os.AsyncTask
 import android.os.Bundle
-import android.os.Handler
 import android.support.v7.app.AppCompatActivity
 import android.widget.Toast
 import android.view.View
@@ -25,32 +25,32 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.AbsListView
 import android.support.v7.widget.SearchView
-import android.widget.AdapterView
 import android.widget.LinearLayout
-import com.example.myapplication.model.Movies
-import com.example.myapplication.model.MoviesResponse
-import com.example.myapplication.repository.FavHelper
+import com.example.myapplication.MoviesAdapter
+import com.example.myapplication.R
+import com.example.myapplication.movie.Movies
+import com.example.myapplication.movie.MoviesResponse
+import com.example.myapplication.data.local.FavHelper
 import com.example.myapplication.repository.Repository
-import com.example.myapplication.service.Api
-import com.example.myapplication.service.Client
+import com.example.myapplication.data.remote.model.Api
+import com.example.myapplication.data.remote.retrofit.Client
+import com.example.myapplication.movie_detail.view.DetailActivity
 import java.lang.Exception
 
-class MainActivity : AppCompatActivity(),ComponentCallbacks2,MoviesAdapter.OnItemClickListener {
+class MainActivity : AppCompatActivity(),ComponentCallbacks2,
+    MoviesAdapter.OnItemClickListener,MainActivityContract.View {
 
+
+    private lateinit var mainPresenter: MainPresenter
     var currentItem: Int? = null
     var totalItem: Int? = null
     var scrollItem: Int? = null
     var loading: Boolean = false
-
-    var pastVisiblesItems: Int = 0
-    var visibleItemCount: Int = 0
-    var totalItemCount: Int = 0
     val shownInOneScreen=20
     lateinit var items: ArrayList<String>
 
     private val MOVIES = 0
     private val POPULAR_TASK = 1
-    //private val UPCOMING_TASK = 2
     private val TOP_RATED_TASK = 3
     private val NOW_PLAYING_TASK = 2
     private var moviesAdapter: MoviesAdapter? = null
@@ -66,9 +66,12 @@ class MainActivity : AppCompatActivity(),ComponentCallbacks2,MoviesAdapter.OnIte
         setContentView(R.layout.activity_main)
         repository = Repository(Client.getClient()!!.create(Api::class.java))
 
+        this.mainPresenter= MainPresenter()
+        this.mainPresenter.setView(this)
+
+
         var mLayoutManager = LinearLayoutManager(this, LinearLayout.VERTICAL, false)
         recylerView_main.layoutManager = mLayoutManager
-
 
         if (savedInstanceState != null) {
             displayData()
@@ -96,15 +99,16 @@ class MainActivity : AppCompatActivity(),ComponentCallbacks2,MoviesAdapter.OnIte
                 totalItem = linearLayoutManager.itemCount
                 scrollItem = linearLayoutManager.findFirstCompletelyVisibleItemPosition()
 
-                if (!loading && (currentItem!! + scrollItem!! == totalItem)) {
-                    loading = false
-                    loadJson()
-                }
+                    if (!loading && (currentItem!! + scrollItem!! == totalItem)) {
+                        loading = false
+                        loadMovies()
+                    }
+
+
             }
 
 
         })
-        //loadJson()
 
         bottom_navigation.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
@@ -140,50 +144,9 @@ class MainActivity : AppCompatActivity(),ComponentCallbacks2,MoviesAdapter.OnIte
             }
 
         }
-
-       /* recylerView_main.addOnScrollListener(object:RecyclerView.OnScrollListener(){
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                if(dy>0){
-                    visibleItemCount=mLayoutManager.childCount
-                    totalItemCount=mLayoutManager.itemCount
-                    pastVisiblesItems=mLayoutManager.findFirstCompletelyVisibleItemPosition()
-                    if(visibleItemCount + pastVisiblesItems >= totalItemCount){
-                        if(!loading){
-                            loading=true
-                            loading_indicator.visibility=View.VISIBLE
-                            Handler().postDelayed({
-                                for(i in totalItemCount + 1..totalItemCount +shownInOneScreen){
-                                    items.add("Item:$i")
-                                }
-                                moviesAdapter?.notifyDataSetChanged()
-                                loading_indicator.visibility=View.GONE
-                                loading=false
-                            },1000)
-
-                        }
-                    }
-
-                }
-            }
-        })*/
-
     }
 
-    /*private fun searchCode(){
-        search_view.setOnSearchListener(object :FloatingSearchView.OnSearchListener{
-            override fun onSearchAction(currentQuery: String) {
-                recylerView_main.smoothScrollToPosition(0)
-                fetchMovies(SEARCH)
-                search_view.clearQuery()
 
-            }
-
-            override fun onSuggestionClicked(searchSuggestion: SearchSuggestion?) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
-
-        })
-    }*/
 
     private fun initViews2() {
         val factory: SQLiteDatabase.CursorFactory? = null
@@ -207,12 +170,8 @@ class MainActivity : AppCompatActivity(),ComponentCallbacks2,MoviesAdapter.OnIte
         val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
          searchView = menu.findItem(R.id.action_search).actionView as SearchView
         searchView.setSearchableInfo(searchManager.getSearchableInfo(componentName))
-
-
-        //searchView.setSearchableInfo(searchManager.getSearchableInfo(componentName))
         searchView.maxWidth = Int.MAX_VALUE
 
-        //if(searchView!=null){
 
             searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(query: String?): Boolean {
@@ -221,7 +180,6 @@ class MainActivity : AppCompatActivity(),ComponentCallbacks2,MoviesAdapter.OnIte
                 }
 
                 override fun onQueryTextChange(newText: String): Boolean {
-                   //clear ekle
                     moviesAdapter?.filter?.filter(newText)
                     moviesAdapter?.notifyDataSetChanged()
                     return true
@@ -278,11 +236,11 @@ class MainActivity : AppCompatActivity(),ComponentCallbacks2,MoviesAdapter.OnIte
             recylerView_main.layoutManager = GridLayoutManager(this, 4)
         }
         recylerView_main.itemAnimator = DefaultItemAnimator()
-        loadJson()
+        loadMovies()
     }
 
 
-    private fun fetchMovies(taskId: Int): Boolean {
+     fun fetchMovies(taskId: Int): Boolean {
         recylerView_main.visibility = View.INVISIBLE
         recylerView_main.visibility = View.VISIBLE
         when (taskId) {
@@ -301,7 +259,7 @@ class MainActivity : AppCompatActivity(),ComponentCallbacks2,MoviesAdapter.OnIte
                     }
 
                     override fun onFailure(call: retrofit2.Call<MoviesResponse>, t: Throwable) {
-                        Toast.makeText(this@MainActivity, "Error", Toast.LENGTH_SHORT).show()
+                        showError("Error Movies")
                     }
                 })
                 return true
@@ -323,7 +281,7 @@ class MainActivity : AppCompatActivity(),ComponentCallbacks2,MoviesAdapter.OnIte
                     }
 
                     override fun onFailure(call: retrofit2.Call<MoviesResponse>, t: Throwable) {
-                        Toast.makeText(this@MainActivity, "Error", Toast.LENGTH_SHORT).show()
+                        showError("Error Popular")
                     }
                 })
                 return true
@@ -344,7 +302,7 @@ class MainActivity : AppCompatActivity(),ComponentCallbacks2,MoviesAdapter.OnIte
                     }
 
                     override fun onFailure(call: retrofit2.Call<MoviesResponse>, t: Throwable) {
-                        Toast.makeText(this@MainActivity, "Error", Toast.LENGTH_SHORT).show()
+                        showError("Error NowPlaying")
                     }
                 })
                 return true
@@ -365,7 +323,7 @@ class MainActivity : AppCompatActivity(),ComponentCallbacks2,MoviesAdapter.OnIte
                     }
 
                     override fun onFailure(call: retrofit2.Call<MoviesResponse>, t: Throwable) {
-                        Toast.makeText(this@MainActivity, "Error", Toast.LENGTH_SHORT).show()
+                        showError("Error TopRated")
                     }
                 })
                 return true
@@ -378,14 +336,14 @@ class MainActivity : AppCompatActivity(),ComponentCallbacks2,MoviesAdapter.OnIte
     }
 
     override fun onItemClicked(movie: Movies) {
-        Toast.makeText(this, "Detail Page", Toast.LENGTH_SHORT).show()
+        showError("Detail Page")
         val intent = Intent(this, DetailActivity::class.java)
         intent.putExtra("MOVIE_ID", movie.getId())
         //intent.getStringExtra("MOVIE_ID")
         this.startActivity(intent)
     }
 
-    private fun loadJson() {
+     fun loadMovies() {
 
         try {
             repository.getMovies().enqueue(object : Callback<MoviesResponse> {
@@ -402,24 +360,24 @@ class MainActivity : AppCompatActivity(),ComponentCallbacks2,MoviesAdapter.OnIte
                 }
 
                 override fun onFailure(call: retrofit2.Call<MoviesResponse>, t: Throwable) {
-                    Toast.makeText(this@MainActivity, "Error", Toast.LENGTH_SHORT).show()
+                    showError("Error")
                     recylerView_main.visibility = View.INVISIBLE
                     recylerView_main.visibility = View.GONE
                 }
             })
         } catch (e: Exception) {
-            Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show()
+            showError("Error")
         }
     }
 
 
-    private fun getAllFavorite() {
+     fun getAllFavorite() {
         class FavoritesTask : AsyncTask<Void, Void, Void>() {
             override fun doInBackground(vararg params: Void): Void? {
                 arraylistmovies.clear()
-                arraylistmovies.addAll(favoriteDbHelper!!.getAllFavorite())
+                    arraylistmovies.addAll(favoriteDbHelper!!.getAllFavorite())
 
-                return null
+                    return null
             }
 
             override fun onPostExecute(aVoid: Void?) {
@@ -430,8 +388,16 @@ class MainActivity : AppCompatActivity(),ComponentCallbacks2,MoviesAdapter.OnIte
         FavoritesTask().execute()
     }
 
+    override fun showError(value: String) {
+        Toast.makeText(activity, value, Toast.LENGTH_SHORT).show()
 
     }
+
+
+
+
+
+}
 
 
 

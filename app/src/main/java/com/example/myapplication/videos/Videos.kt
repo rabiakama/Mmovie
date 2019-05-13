@@ -1,4 +1,4 @@
-package com.example.myapplication.model
+package com.example.myapplication.videos
 
 import com.google.gson.annotations.SerializedName
 
@@ -10,13 +10,6 @@ class Videos {
     @SerializedName("name")
     //sonradan eklendi
     private var name:String?=null
-   /* @SerializedName("id")
-    var id: String? = null
-    @SerializedName("type")
-    var type: String? = null
-    @SerializedName("site")
-    var site: String? = null
-*/
 
 
     fun getName(): String? {

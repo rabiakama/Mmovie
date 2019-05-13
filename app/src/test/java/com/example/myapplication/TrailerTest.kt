@@ -1,6 +1,6 @@
 package com.example.myapplication
 
-import com.example.myapplication.model.Videos
+import com.example.myapplication.videos.Videos
 import org.junit.Assert
 import org.junit.Test
 

@@ -1,12 +1,8 @@
 package com.example.myapplication
 
-import com.example.myapplication.model.Movies
-import com.example.myapplication.model.MoviesResponse
-import com.example.myapplication.repository.Repository
+import com.example.myapplication.movie.Movies
 import org.junit.Assert.*
 import org.junit.Test
-import org.mockito.Mock
-import org.mockito.Mockito
 
 
 class MovieDetailsTest{
@@ -14,7 +10,7 @@ class MovieDetailsTest{
     @Test
     fun getMoviesTitleNotEmpty(){
         //given
-        val movies=Movies()
+        val movies= Movies()
 
         //when
         val list=movies.getTitle()
@@ -26,7 +22,7 @@ class MovieDetailsTest{
 
     @Test
     fun getMoviesVoteAverageNotEmpty(){
-        val movies=Movies()
+        val movies= Movies()
         val list=movies.getVoteAverage()
         assertNotEquals(0,list?.toDouble())
     }

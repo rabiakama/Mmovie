@@ -1,20 +1,18 @@
 package com.example.myapplication.api
 
 import com.example.asus.a03042019.utils.getBackdropUrl
-import com.example.myapplication.model.Movies
-import com.example.myapplication.model.MoviesResponse
-import com.example.myapplication.service.Api
+import com.example.myapplication.movie.Movies
+import com.example.myapplication.data.remote.model.Api
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 
 import org.mockito.Mockito
-import java.lang.Exception
 
 
 class TestApi {
 
-    private lateinit var apiService:Api
+    private lateinit var apiService: Api
 
     @Before
     fun initService(){
@@ -24,7 +22,7 @@ class TestApi {
 
     @Test
     fun getMovieDetails() {
-        val movies =Movies()
+        val movies = Movies()
         apiService.getDetails(1,"","en-Us")
         Assert.assertEquals("Burning",movies.getTitle())
         Assert.assertEquals(getBackdropUrl("/fki3kBlwJzFp8QohL43g9ReV455.jpg"),movies.getBackdropPath())

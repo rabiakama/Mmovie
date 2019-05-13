@@ -1,7 +1,6 @@
 package com.example.myapplication
 
-import com.example.myapplication.model.Movies
-import com.example.myapplication.service.Api
+import com.example.myapplication.movie.Movies
 import org.junit.Test
 
 import org.junit.Assert.*
@@ -19,7 +18,7 @@ open class ExampleUnitTest {
 
     @Test
     fun testPopularMovies(){
-        val movies:Movies
+        val movies: Movies
 
     }
 

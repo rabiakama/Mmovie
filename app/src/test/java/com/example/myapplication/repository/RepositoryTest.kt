@@ -1,9 +1,8 @@
 package com.example.myapplication.repository
 
 import android.arch.core.executor.testing.InstantTaskExecutorRule
-import com.bumptech.glide.load.engine.Resource
-import com.example.myapplication.model.Movies
-import com.example.myapplication.service.Api
+import com.example.myapplication.movie.Movies
+import com.example.myapplication.data.remote.model.Api
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test

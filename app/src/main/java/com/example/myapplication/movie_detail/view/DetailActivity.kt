@@ -1,11 +1,10 @@
-package com.example.myapplication
+package com.example.myapplication.movie_detail.view
 
 
 
 import android.content.*
 import android.database.sqlite.SQLiteDatabase
 import android.net.ConnectivityManager
-import android.net.NetworkInfo
 import android.net.Uri
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -13,41 +12,37 @@ import android.os.PersistableBundle
 
 import android.support.design.widget.AppBarLayout
 import android.support.design.widget.CollapsingToolbarLayout
+import android.support.design.widget.Snackbar
 import com.bumptech.glide.Glide
 import com.example.myapplication.repository.OnGetMovieCallback
 import com.example.myapplication.repository.Repository
-import com.example.myapplication.service.Api
-import com.example.myapplication.service.Client
+import com.example.myapplication.data.remote.model.Api
+import com.example.myapplication.data.remote.retrofit.Client
 import kotlinx.android.synthetic.main.activity_detail.*
-import android.support.v7.widget.LinearLayoutManager
-import com.example.myapplication.model.Movies
+import com.example.myapplication.movie.Movies
 import android.view.View
 import android.widget.ImageView
-
 import android.widget.Toast
-import com.example.myapplication.adapter.TrailerAdapter
-import com.example.myapplication.model.MovieDetail
-import com.example.myapplication.model.Videos
-import com.example.myapplication.repository.FavHelper
+import com.example.myapplication.R
+import com.example.myapplication.videos.Videos
+import com.example.myapplication.data.local.FavHelper
+import com.example.myapplication.movie_detail.model.MovieDetail
+import com.example.myapplication.movie_detail.presenter.DetailPresenter
 import com.example.myapplication.repository.OnGetTrailersCallback
 
 
 
 @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
-class DetailActivity : AppCompatActivity() {
+class DetailActivity : AppCompatActivity(), DetailActivityContract.View {
+
+    private val detailPresenter: DetailPresenter?=null
 
 
     private val BACK_DROP_URL = "https://image.tmdb.org/t/p/w500/"
     private val YOUTUBE_VIDEO_URL = "https://www.youtube.com/watch?v="
     private val YOUTUBE_THUMBNAIL_URL = "http://img.youtube.com/vi/%s/0.jpg"
-    private var saveMovieRecordNumber: Int? = null
-    private val SAVE_MOVIE_SUCCESS = 10
-    private val SAVE_MOVIE_FAIL = 11
-    private  var movies:Movies?=null
-    //private var favorite:Movies?=null
+    private  var movies: Movies?=null
     private var mtrailerList: ArrayList<Videos>?= arrayListOf()
-    lateinit var mtrailerAdapter: TrailerAdapter
-    private val IS_FAVORITE = "isFavorite"
     private var movieID: Int = 0
     var MOVIE_ID = "movie_id"
     val factory: SQLiteDatabase.CursorFactory? = null
@@ -69,18 +64,12 @@ class DetailActivity : AppCompatActivity() {
             setDisplayHomeAsUpEnabled(true)
             setHomeButtonEnabled(true)
         }
-        // supportActionBar?.title=movie.getTitle()
-        loadDetail()
-        //loadTrailer()
+        //loadDetail()
         initCollapsingToolbar()
+        if (detailPresenter != null) {
+            detailPresenter.requestMovieData(movieID)
+        }
 
-
-
-        /* favorite_button.setOnClickListener {
-            val intent=Intent(this,FavoriteActivity::class.java)
-            startActivity(intent)
-            Toast.makeText(this,"Added to Your Favorite Page",Toast.LENGTH_LONG).show()
-        }*/
 
 
         favorite_button.setOnClickListener (
@@ -89,7 +78,7 @@ class DetailActivity : AppCompatActivity() {
                     val favorite:Boolean=true
                     if(favorite){
 
-                        val editor=getSharedPreferences(" com.example.myapplication.DetailActivity", Context.MODE_PRIVATE).edit()
+                        val editor=getSharedPreferences(" com.example.myapplication.movie_detail.view.DetailActivity", Context.MODE_PRIVATE).edit()
                         editor.putBoolean("Favorite Added",true)
                         editor.apply()
                         saveFavorite()
@@ -98,7 +87,7 @@ class DetailActivity : AppCompatActivity() {
                     }else{
                         val moviId=intent.extras.getInt("id")
                         favoriteDbHelper?.deleteFavorite(moviId)
-                        val editor=getSharedPreferences(" com.example.myapplication.DetailActivity", Context.MODE_PRIVATE).edit()
+                        val editor=getSharedPreferences(" com.example.myapplication.movie_detail.view.DetailActivity", Context.MODE_PRIVATE).edit()
                         editor.putBoolean("Favorite Removed",true)
                         editor.apply()
                         Toast.makeText(this@DetailActivity,"Removed from Favorite",Toast.LENGTH_SHORT).show()
@@ -107,29 +96,13 @@ class DetailActivity : AppCompatActivity() {
                     }
 
                 }
-                /* override fun onClick(v: View) {
-                     val favorite: Boolean? = null
-                     if (favorite!!) {
-                         addMovieToFavorite()
-                     }
-
-                 }*/
 
             })
-            //initView()
         }
 
 
 
-    private fun initView() {
-        val adapter: TrailerAdapter? = null
-        val mLayoutManager = LinearLayoutManager(applicationContext)
-        detailsRv.layoutManager = mLayoutManager
-        detailsRv.adapter = adapter
-        adapter?.notifyDataSetChanged()
-        loadDetail()
 
-    }
 
     private fun initCollapsingToolbar() {
         val collapsingToolbar: CollapsingToolbarLayout = findViewById(R.id.collapsing_tool_bar)
@@ -154,15 +127,48 @@ class DetailActivity : AppCompatActivity() {
         })
     }
 
+    override fun setDataToViews(movie: MovieDetail) {
 
-    private fun loadDetail() {
+        movies= Movies()
+
+        movies= Movies()
+        movies?.setTitle(movie.getTitle().toString())
+        movies?.setReleaseDate(movie.getReleaseDate().toString())
+        movies?.setVoteAverage(movie.getVoteAverage())
+        movies?.setPosterPath(movie.getPosterPath().toString())
+        movies?.setOriginalLanguage(movie.getOriginalLanguage().toString())
+        movies?.setOverview(movie.getOverview().toString())
+
+        detail_title.text = movie.getTitle()
+        releasedate.text = movie.getReleaseDate()
+        vote_average.text = movie.getVoteAverage()?.toString()
+        original_language.text = movie.getOriginalLanguage()
+        detailoverview.text = movie.getOverview()
+        loadTrailer(movie)
+        if (!isFinishing) {
+            Glide.with(this@DetailActivity)
+                .load(BACK_DROP_URL + movie.getPosterPath())
+                .placeholder(R.drawable.abc_ic_go_search_api_material)
+                .into(details_image)
+
+        }
+    }
+
+
+    override fun onResponseFailure(t: Throwable) {
+
+        Toast.makeText(this,"Error",Toast.LENGTH_SHORT).show()
+    }
+
+
+   /* override fun getMovieDetail() {
 
         repository.getMovieDetail(movieID, object : OnGetMovieCallback {
             override fun onSuccess(movie: MovieDetail) {
 
-                 movies=Movies()
+                 movies= Movies()
 
-                movies=Movies()
+                movies= Movies()
                 movies?.setTitle(movie.getTitle().toString())
                 movies?.setReleaseDate(movie.getReleaseDate().toString())
                 movies?.setVoteAverage(movie.getVoteAverage())
@@ -191,9 +197,9 @@ class DetailActivity : AppCompatActivity() {
 
         })
 
-    }
+    }*/
 
-    private fun loadTrailer(movie:MovieDetail) {
+     fun loadTrailer(movie: MovieDetail) {
         repository.getTrailers(movieID, object : OnGetTrailersCallback {
             override fun onSuccess(trailers: Array<Videos>?) {
                 trailersLabel.visibility = View.VISIBLE
@@ -230,13 +236,10 @@ class DetailActivity : AppCompatActivity() {
         })
     }
 
-    private fun showTrailer(url: String) {
+     fun showTrailer(url: String) {
 
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
         startActivity(intent)
-
-        /*val intent = Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v=" + movieID))
-            startActivity(intent)*/
     }
 
 
@@ -244,10 +247,10 @@ class DetailActivity : AppCompatActivity() {
         onBackPressed()
         return true
     }
-    
 
 
-    private fun saveFavorite() {
+
+     fun saveFavorite() {
         val favorites = Movies()
         val rate=movies?.getVoteAverage()
         val thumbnail=movies?.getPosterPath()
@@ -265,21 +268,12 @@ class DetailActivity : AppCompatActivity() {
 
     }
 
+    /*private fun onFavoriteClick(){
 
-    private fun checkIsMovieAlreadyInFav(movieId:String): Boolean {
-        val database=favoriteDbHelper?.readableDatabase
-        val selectString="SELECT *FROM" +FavHelper.TABLE_NAME + "WHERE"
-         FavHelper.COLUMN_MOVIEID + "=?"
+        movies?.let { detailPresenter?.onFavoriteClick(it) }
 
-        val cursor=database?.rawQuery(selectString, arrayOf(movieId))
-        //String[] {movieıd} yerine arrayOf
-        val count=cursor?.count
-        cursor?.close()
-        database?.close()
-        return count!! >0
-    }
+    }*/
 
-    //yeni eklenen
     private fun getNetworkınfo(): Boolean {
         val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val activeNetworkInfo=connectivityManager.activeNetworkInfo
@@ -303,28 +297,6 @@ class DetailActivity : AppCompatActivity() {
 }
 
 
-
-
-
-   /* @RequiresApi(Build.VERSION_CODES.P)
-    fun saveFavorite(){
-       lateinit var favorites:Movies
-        val title:String=""
-        val poster:String=""
-        val overvieW:String=""
-
-        val movies:Movies?=null
-        val rate: Double? = movies?.getVoteAverage()
-
-        favorites.setId(movieID)
-        favorites.setTitle(title)
-        favorites.setPosterPath(poster)
-        favorites.setVoteAverage(rate)
-        favorites.setOverview(overvieW)
-
-        favoriteDbHelper?.addFavorite(favorites)
-        }
-        */
 
 
 

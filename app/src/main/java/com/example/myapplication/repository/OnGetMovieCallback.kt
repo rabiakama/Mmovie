@@ -1,7 +1,6 @@
 package com.example.myapplication.repository
 
-import com.example.myapplication.model.MovieDetail
-import com.example.myapplication.model.Movies
+import com.example.myapplication.movie_detail.model.MovieDetail
 
 
 interface OnGetMovieCallback {

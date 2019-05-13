@@ -1,4 +1,5 @@
-package com.example.myapplication.model
+package com.example.myapplication.videos
+
 
 import com.google.gson.annotations.SerializedName
 
@@ -14,30 +15,6 @@ class VideosResponse {
     @SerializedName("name")
     private var name:String?=null
 
-
-
-    fun getName():String?{
-        return name
-    }
-    fun setName(name:String){
-        this.name=name
-    }
-
-    fun getKey():String?{
-        return key
-    }
-    fun setKey(key:String){
-        this.key=key
-    }
-
-    fun getSize():String?{
-        return size
-    }
-    fun setSize(size:String){
-        this.size=size
-    }
-
-
     fun getTrailers(): Array<Videos>? {
         return results
     }
@@ -45,13 +22,7 @@ class VideosResponse {
     fun setTrailers(trailers: Array<Videos>?) {
         this.results = trailers
     }
-    fun getId(): Int? {
-        return id
-    }
 
-    fun setId(id: Int) {
-        this.id = id
-    }
 
 
 
